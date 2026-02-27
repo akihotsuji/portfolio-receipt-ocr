@@ -1,0 +1,14 @@
+# ReceiptOCR開発環境用Dockerfile
+# Frontend（Node.js）とBackend（Java）両方の開発に対応
+
+FROM eclipse-temurin:21-jdk-alpine
+
+# Node.js、npm、bash、git、curl、GitHub CLI、Docker CLIをインストール
+RUN apk add --no-cache bash git nodejs npm curl docker-cli github-cli --repository=https://dl-cdn.alpinelinux.org/alpine/edge/community
+
+# 作業ディレクトリ
+WORKDIR /workspace
+
+# 開発環境なので、ソースコードはボリュームマウントする
+# コンテナは起動したまま維持
+CMD ["tail", "-f", "/dev/null"]

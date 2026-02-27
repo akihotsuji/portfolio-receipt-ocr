@@ -1,0 +1,53 @@
+spring:
+  application:
+    name: receiptocr-backend
+
+  profiles:
+    active: dev
+
+  datasource:
+    url: jdbc:postgresql://localhost:55432/portfolio?currentSchema=receipt_ocr
+    username: portfolio_user
+    password: portfolio_pass
+    driver-class-name: org.postgresql.Driver
+
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    show-sql: false
+    properties:
+      hibernate:
+        format_sql: true
+        default_schema: receipt_ocr
+        jdbc:
+          batch_size: 50
+        order_inserts: true
+        order_updates: true
+
+  flyway:
+    enabled: true
+    baseline-on-migrate: true
+    schemas: receipt_ocr
+    locations: classpath:db/migration
+
+server:
+  port: 8083
+  servlet:
+    context-path: /api
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info
+
+jwt:
+  issuer: "https://example.com"
+  jwks-uri: "http://localhost:18080/api/.well-known/jwks.json"
+  required-app: "RECEIPT_OCR"
+
+logging:
+  level:
+    com.portfolio.receiptocr: DEBUG
+    org.springframework.security: DEBUG
+    org.hibernate.SQL: DEBUG
