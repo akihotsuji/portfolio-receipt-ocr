@@ -1,0 +1,28 @@
+spring:
+  datasource:
+    url: jdbc:postgresql://${DB_HOST:localhost}:${DB_PORT:5432}/${DB_NAME:portfolio}?currentSchema=receipt_ocr&sslmode=${DB_SSL_MODE:disable}
+    username: ${DB_USER:portfolio_user}
+    password: ${DB_PASSWORD:portfolio_pass}
+
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+        default_schema: receipt_ocr
+
+server:
+  port: 8082
+
+jwt:
+  issuer: ${JWT_ISSUER:https://example.com}
+  jwks-uri: ${JWT_JWKS_URI:http://portal-backend:8080/api/.well-known/jwks.json}
+  required-app: ${JWT_REQUIRED_APP:RECEIPT_OCR}
+
+logging:
+  level:
+    com.portfolio.receiptocr: DEBUG
+    org.springframework.security: DEBUG
+    org.hibernate.SQL: DEBUG
