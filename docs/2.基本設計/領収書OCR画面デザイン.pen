@@ -1449,7 +1449,7 @@
       "id": "bOXSz",
       "x": 1334,
       "y": 0,
-      "name": "画面B - 処理状況・編集",
+      "name": "画面B - バッチ履歴・処理状況・編集",
       "width": 1280,
       "fill": "#FFFFFF",
       "layout": "vertical",
@@ -1529,208 +1529,31 @@
         {
           "type": "frame",
           "id": "FTxuq",
-          "name": "MainContent",
-          "width": "fill_container",
-          "layout": "vertical",
-          "gap": 24,
-          "padding": [
-            32,
-            48
-          ],
+          "name": "BodyContainer",
+          "width": 1277,
+          "height": 1043,
           "children": [
             {
               "type": "frame",
-              "id": "8zVQe",
-              "name": "ProgressSection",
-              "width": "fill_container",
-              "layout": "vertical",
-              "gap": 12,
-              "children": [
-                {
-                  "type": "text",
-                  "id": "emki4",
-                  "name": "progressLabel",
-                  "fill": "#374151",
-                  "content": "3 / 5 完了",
-                  "fontFamily": "Inter",
-                  "fontSize": 14,
-                  "fontWeight": "500"
-                },
-                {
-                  "type": "frame",
-                  "id": "653bZ",
-                  "name": "ProgressBarBg",
-                  "width": "fill_container",
-                  "height": 8,
-                  "fill": "#F3F4F6",
-                  "cornerRadius": 4,
-                  "children": [
-                    {
-                      "type": "frame",
-                      "id": "yXCQ7",
-                      "name": "ProgressBarFill",
-                      "width": 710,
-                      "height": "fill_container",
-                      "fill": "#22C55E",
-                      "cornerRadius": 4
-                    }
-                  ]
-                },
-                {
-                  "type": "frame",
-                  "id": "dnqo6",
-                  "name": "StatusBadges",
-                  "gap": 12,
-                  "children": [
-                    {
-                      "type": "frame",
-                      "id": "AEEV8",
-                      "name": "badge1",
-                      "fill": "#F3F4F6",
-                      "cornerRadius": 2,
-                      "gap": 4,
-                      "padding": [
-                        4,
-                        10
-                      ],
-                      "alignItems": "center",
-                      "children": [
-                        {
-                          "type": "text",
-                          "id": "PVheF",
-                          "name": "badge1Text",
-                          "fill": "#6B7280",
-                          "content": "待機中: 1件",
-                          "fontFamily": "Inter",
-                          "fontSize": 12,
-                          "fontWeight": "normal"
-                        }
-                      ]
-                    },
-                    {
-                      "type": "frame",
-                      "id": "wOluT",
-                      "name": "badge2",
-                      "fill": "#DBEAFE",
-                      "cornerRadius": 2,
-                      "gap": 4,
-                      "padding": [
-                        4,
-                        10
-                      ],
-                      "alignItems": "center",
-                      "children": [
-                        {
-                          "type": "text",
-                          "id": "wgCcj",
-                          "name": "badge2Text",
-                          "fill": "#2563EB",
-                          "content": "処理中: 1件",
-                          "fontFamily": "Inter",
-                          "fontSize": 12,
-                          "fontWeight": "normal"
-                        }
-                      ]
-                    },
-                    {
-                      "type": "frame",
-                      "id": "nvTPm",
-                      "name": "badge3",
-                      "fill": "#DCFCE7",
-                      "cornerRadius": 2,
-                      "gap": 4,
-                      "padding": [
-                        4,
-                        10
-                      ],
-                      "alignItems": "center",
-                      "children": [
-                        {
-                          "type": "text",
-                          "id": "N4Cwj",
-                          "name": "badge3Text",
-                          "fill": "#16A34A",
-                          "content": "完了: 1件",
-                          "fontFamily": "Inter",
-                          "fontSize": 12,
-                          "fontWeight": "normal"
-                        }
-                      ]
-                    },
-                    {
-                      "type": "frame",
-                      "id": "JC7bs",
-                      "name": "badge4",
-                      "fill": "#CCFBF1",
-                      "cornerRadius": 2,
-                      "gap": 4,
-                      "padding": [
-                        4,
-                        10
-                      ],
-                      "alignItems": "center",
-                      "children": [
-                        {
-                          "type": "text",
-                          "id": "ZwvQb",
-                          "name": "badge4Text",
-                          "fill": "#0D9488",
-                          "content": "確定済: 1件",
-                          "fontFamily": "Inter",
-                          "fontSize": 12,
-                          "fontWeight": "normal"
-                        }
-                      ]
-                    },
-                    {
-                      "type": "frame",
-                      "id": "srj1l",
-                      "name": "badge5",
-                      "fill": "#FEE2E2",
-                      "cornerRadius": 2,
-                      "gap": 4,
-                      "padding": [
-                        4,
-                        10
-                      ],
-                      "alignItems": "center",
-                      "children": [
-                        {
-                          "type": "text",
-                          "id": "nhhLf",
-                          "name": "badge5Text",
-                          "fill": "#DC2626",
-                          "content": "失敗: 1件",
-                          "fontFamily": "Inter",
-                          "fontSize": 12,
-                          "fontWeight": "normal"
-                        }
-                      ]
-                    }
-                  ]
-                }
-              ]
-            },
-            {
-              "type": "frame",
-              "id": "zBKhl",
-              "name": "JobList",
-              "width": "fill_container",
-              "cornerRadius": 4,
+              "id": "ft6Ft",
+              "name": "BatchHistorySidebar",
+              "width": 280,
+              "height": "fill_container",
+              "fill": "#F9FAFB",
               "stroke": {
                 "align": "inside",
-                "thickness": 1,
+                "thickness": {
+                  "right": 1
+                },
                 "fill": "#E5E7EB"
               },
               "layout": "vertical",
               "children": [
                 {
                   "type": "frame",
-                  "id": "BJgOM",
-                  "name": "JobListHeader",
+                  "id": "tM1xp",
+                  "name": "SidebarHeader",
                   "width": "fill_container",
-                  "height": 40,
-                  "fill": "#F9FAFB",
                   "stroke": {
                     "align": "inside",
                     "thickness": {
@@ -1738,481 +1561,330 @@
                     },
                     "fill": "#E5E7EB"
                   },
-                  "padding": [
-                    0,
-                    16
-                  ],
+                  "padding": 16,
                   "alignItems": "center",
                   "children": [
                     {
                       "type": "text",
-                      "id": "MMzS3",
-                      "name": "jobListHeaderText",
+                      "id": "dCFL6",
+                      "name": "SidebarTitle",
                       "fill": "#374151",
-                      "content": "ジョブ一覧",
+                      "content": "バッチ履歴",
                       "fontFamily": "Inter",
-                      "fontSize": 13,
+                      "fontSize": 14,
                       "fontWeight": "600"
                     }
                   ]
                 },
                 {
                   "type": "frame",
-                  "id": "i37MO",
-                  "name": "Job-Confirmed",
+                  "id": "KIwhz",
+                  "name": "BatchList",
                   "width": "fill_container",
-                  "height": 48,
-                  "stroke": {
-                    "align": "inside",
-                    "thickness": {
-                      "bottom": 1
-                    },
-                    "fill": "#F3F4F6"
-                  },
-                  "padding": [
-                    0,
-                    16
-                  ],
-                  "justifyContent": "space_between",
-                  "alignItems": "center",
+                  "height": "fill_container",
+                  "layout": "vertical",
                   "children": [
                     {
                       "type": "frame",
-                      "id": "yqBim",
-                      "name": "job1Left",
-                      "gap": 12,
-                      "alignItems": "center",
-                      "children": [
-                        {
-                          "type": "icon_font",
-                          "id": "imN62",
-                          "name": "job1Icon",
-                          "width": 16,
-                          "height": 16,
-                          "iconFontName": "image",
-                          "iconFontFamily": "lucide",
-                          "fill": "#6B7280"
-                        },
-                        {
-                          "type": "text",
-                          "id": "Crbrb",
-                          "name": "job1Name",
-                          "fill": "#374151",
-                          "content": "receipt_001.jpg",
-                          "fontFamily": "Inter",
-                          "fontSize": 14,
-                          "fontWeight": "normal"
-                        },
-                        {
-                          "type": "frame",
-                          "id": "lEb3R",
-                          "name": "job1Badge",
-                          "fill": "#CCFBF1",
-                          "cornerRadius": 2,
-                          "padding": [
-                            3,
-                            8
-                          ],
-                          "alignItems": "center",
-                          "children": [
-                            {
-                              "type": "text",
-                              "id": "NvjOo",
-                              "name": "job1BadgeText",
-                              "fill": "#0D9488",
-                              "content": "確定済",
-                              "fontFamily": "Inter",
-                              "fontSize": 11,
-                              "fontWeight": "500"
-                            }
-                          ]
-                        }
-                      ]
-                    }
-                  ]
-                },
-                {
-                  "type": "frame",
-                  "id": "TxZoo",
-                  "name": "Job-Completed",
-                  "width": "fill_container",
-                  "height": 48,
-                  "stroke": {
-                    "align": "inside",
-                    "thickness": {
-                      "bottom": 1
-                    },
-                    "fill": "#F3F4F6"
-                  },
-                  "padding": [
-                    0,
-                    16
-                  ],
-                  "justifyContent": "space_between",
-                  "alignItems": "center",
-                  "children": [
-                    {
-                      "type": "frame",
-                      "id": "cKrsw",
-                      "name": "job2Left",
-                      "gap": 12,
-                      "alignItems": "center",
-                      "children": [
-                        {
-                          "type": "icon_font",
-                          "id": "4vvnf",
-                          "name": "job2Icon",
-                          "width": 16,
-                          "height": 16,
-                          "iconFontName": "image",
-                          "iconFontFamily": "lucide",
-                          "fill": "#6B7280"
-                        },
-                        {
-                          "type": "text",
-                          "id": "B4YAo",
-                          "name": "job2Name",
-                          "fill": "#374151",
-                          "content": "receipt_002.png",
-                          "fontFamily": "Inter",
-                          "fontSize": 14,
-                          "fontWeight": "normal"
-                        },
-                        {
-                          "type": "frame",
-                          "id": "7SwFn",
-                          "name": "job2Badge",
-                          "fill": "#DCFCE7",
-                          "cornerRadius": 2,
-                          "padding": [
-                            3,
-                            8
-                          ],
-                          "alignItems": "center",
-                          "children": [
-                            {
-                              "type": "text",
-                              "id": "3jD8V",
-                              "name": "job2BadgeText",
-                              "fill": "#16A34A",
-                              "content": "完了",
-                              "fontFamily": "Inter",
-                              "fontSize": 11,
-                              "fontWeight": "500"
-                            }
-                          ]
-                        }
-                      ]
-                    },
-                    {
-                      "type": "frame",
-                      "id": "H7iBU",
-                      "name": "job2Btn",
-                      "cornerRadius": 4,
+                      "id": "b9uJG",
+                      "name": "BatchHistoryItem1",
+                      "width": "fill_container",
+                      "fill": "#EFF6FF",
                       "stroke": {
                         "align": "inside",
-                        "thickness": 1,
-                        "fill": "#3B82F6"
+                        "thickness": {
+                          "bottom": 1
+                        },
+                        "fill": "#E5E7EB"
                       },
+                      "layout": "vertical",
+                      "gap": 6,
                       "padding": [
-                        6,
+                        12,
                         16
                       ],
-                      "alignItems": "center",
                       "children": [
-                        {
-                          "type": "text",
-                          "id": "74KiJ",
-                          "name": "job2BtnText",
-                          "fill": "#3B82F6",
-                          "content": "確認・編集",
-                          "fontFamily": "Inter",
-                          "fontSize": 13,
-                          "fontWeight": "500"
-                        }
-                      ]
-                    }
-                  ]
-                },
-                {
-                  "type": "frame",
-                  "id": "MjoFW",
-                  "name": "Job-Processing",
-                  "width": "fill_container",
-                  "height": 48,
-                  "stroke": {
-                    "align": "inside",
-                    "thickness": {
-                      "bottom": 1
-                    },
-                    "fill": "#F3F4F6"
-                  },
-                  "padding": [
-                    0,
-                    16
-                  ],
-                  "justifyContent": "space_between",
-                  "alignItems": "center",
-                  "children": [
-                    {
-                      "type": "frame",
-                      "id": "4szsJ",
-                      "name": "job3Left",
-                      "gap": 12,
-                      "alignItems": "center",
-                      "children": [
-                        {
-                          "type": "icon_font",
-                          "id": "qkqbo",
-                          "name": "job3Icon",
-                          "width": 16,
-                          "height": 16,
-                          "iconFontName": "file",
-                          "iconFontFamily": "lucide",
-                          "fill": "#6B7280"
-                        },
-                        {
-                          "type": "text",
-                          "id": "SmI3X",
-                          "name": "job3Name",
-                          "fill": "#374151",
-                          "content": "invoice_2026.pdf",
-                          "fontFamily": "Inter",
-                          "fontSize": 14,
-                          "fontWeight": "normal"
-                        },
                         {
                           "type": "frame",
-                          "id": "XV5nE",
-                          "name": "job3Badge",
-                          "fill": "#DBEAFE",
-                          "cornerRadius": 2,
-                          "padding": [
-                            3,
-                            8
-                          ],
+                          "id": "dZm0U",
+                          "name": "Item1Row1",
+                          "width": "fill_container",
+                          "justifyContent": "space_between",
                           "alignItems": "center",
                           "children": [
                             {
                               "type": "text",
-                              "id": "B2FbS",
-                              "name": "job3BadgeText",
-                              "fill": "#2563EB",
-                              "content": "処理中",
+                              "id": "okY08",
+                              "name": "Item1Date",
+                              "fill": "#1D4ED8",
+                              "content": "2026-02-28 12:00",
                               "fontFamily": "Inter",
-                              "fontSize": 11,
-                              "fontWeight": "500"
-                            }
-                          ]
-                        }
-                      ]
-                    },
-                    {
-                      "type": "icon_font",
-                      "id": "U1Pe9",
-                      "name": "job3Spinner",
-                      "width": 16,
-                      "height": 16,
-                      "iconFontName": "loader",
-                      "iconFontFamily": "lucide",
-                      "fill": "#3B82F6"
-                    }
-                  ]
-                },
-                {
-                  "type": "frame",
-                  "id": "1RmZG",
-                  "name": "Job-Queued",
-                  "width": "fill_container",
-                  "height": 48,
-                  "stroke": {
-                    "align": "inside",
-                    "thickness": {
-                      "bottom": 1
-                    },
-                    "fill": "#F3F4F6"
-                  },
-                  "padding": [
-                    0,
-                    16
-                  ],
-                  "justifyContent": "space_between",
-                  "alignItems": "center",
-                  "children": [
-                    {
-                      "type": "frame",
-                      "id": "vADsq",
-                      "name": "job4Left",
-                      "gap": 12,
-                      "alignItems": "center",
-                      "children": [
-                        {
-                          "type": "icon_font",
-                          "id": "VX82w",
-                          "name": "job4Icon",
-                          "width": 16,
-                          "height": 16,
-                          "iconFontName": "image",
-                          "iconFontFamily": "lucide",
-                          "fill": "#6B7280"
-                        },
-                        {
-                          "type": "text",
-                          "id": "YWDMx",
-                          "name": "job4Name",
-                          "fill": "#374151",
-                          "content": "receipt_003.jpg",
-                          "fontFamily": "Inter",
-                          "fontSize": 14,
-                          "fontWeight": "normal"
-                        },
-                        {
-                          "type": "frame",
-                          "id": "tgDJy",
-                          "name": "job4Badge",
-                          "fill": "#F3F4F6",
-                          "cornerRadius": 2,
-                          "padding": [
-                            3,
-                            8
-                          ],
-                          "alignItems": "center",
-                          "children": [
-                            {
-                              "type": "text",
-                              "id": "OUu25",
-                              "name": "job4BadgeText",
-                              "fill": "#6B7280",
-                              "content": "待機中",
-                              "fontFamily": "Inter",
-                              "fontSize": 11,
-                              "fontWeight": "500"
-                            }
-                          ]
-                        }
-                      ]
-                    }
-                  ]
-                },
-                {
-                  "type": "frame",
-                  "id": "G3ZIm",
-                  "name": "Job-Failed",
-                  "width": "fill_container",
-                  "height": 48,
-                  "padding": [
-                    0,
-                    16
-                  ],
-                  "justifyContent": "space_between",
-                  "alignItems": "center",
-                  "children": [
-                    {
-                      "type": "frame",
-                      "id": "cH0Nq",
-                      "name": "job5Left",
-                      "gap": 12,
-                      "alignItems": "center",
-                      "children": [
-                        {
-                          "type": "icon_font",
-                          "id": "UECFU",
-                          "name": "job5Icon",
-                          "width": 16,
-                          "height": 16,
-                          "iconFontName": "image",
-                          "iconFontFamily": "lucide",
-                          "fill": "#6B7280"
-                        },
-                        {
-                          "type": "text",
-                          "id": "TdmRf",
-                          "name": "job5Name",
-                          "fill": "#374151",
-                          "content": "receipt_004.jpg",
-                          "fontFamily": "Inter",
-                          "fontSize": 14,
-                          "fontWeight": "normal"
-                        },
-                        {
-                          "type": "frame",
-                          "id": "iHTJh",
-                          "name": "job5Badge",
-                          "fill": "#FEE2E2",
-                          "cornerRadius": 2,
-                          "padding": [
-                            3,
-                            8
-                          ],
-                          "alignItems": "center",
-                          "children": [
-                            {
-                              "type": "text",
-                              "id": "6KIwx",
-                              "name": "job5BadgeText",
-                              "fill": "#DC2626",
-                              "content": "失敗",
-                              "fontFamily": "Inter",
-                              "fontSize": 11,
-                              "fontWeight": "500"
-                            }
-                          ]
-                        }
-                      ]
-                    },
-                    {
-                      "type": "frame",
-                      "id": "2xOWK",
-                      "name": "job5Right",
-                      "gap": 12,
-                      "alignItems": "center",
-                      "children": [
-                        {
-                          "type": "text",
-                          "id": "6OSch",
-                          "name": "job5Error",
-                          "fill": "#DC2626",
-                          "content": "OCR 処理がタイムアウトしました",
-                          "fontFamily": "Inter",
-                          "fontSize": 12,
-                          "fontWeight": "normal"
-                        },
-                        {
-                          "type": "frame",
-                          "id": "X417y",
-                          "name": "job5RetryBtn",
-                          "cornerRadius": 4,
-                          "stroke": {
-                            "align": "inside",
-                            "thickness": 1,
-                            "fill": "#DC2626"
-                          },
-                          "gap": 4,
-                          "padding": [
-                            6,
-                            16
-                          ],
-                          "alignItems": "center",
-                          "children": [
-                            {
-                              "type": "icon_font",
-                              "id": "5FW8P",
-                              "name": "job5RetryIcon",
-                              "width": 14,
-                              "height": 14,
-                              "iconFontName": "refresh-cw",
-                              "iconFontFamily": "lucide",
-                              "fill": "#DC2626"
+                              "fontSize": 12,
+                              "fontWeight": "600"
                             },
                             {
                               "type": "text",
-                              "id": "dbw7X",
-                              "name": "job5RetryText",
-                              "fill": "#DC2626",
-                              "content": "再試行",
+                              "id": "YDtHk",
+                              "name": "Item1Files",
+                              "fill": "#6B7280",
+                              "content": "3枚",
                               "fontFamily": "Inter",
-                              "fontSize": 13,
+                              "fontSize": 11,
+                              "fontWeight": "normal"
+                            }
+                          ]
+                        },
+                        {
+                          "type": "frame",
+                          "id": "opKx0",
+                          "name": "Item1Status",
+                          "gap": 6,
+                          "alignItems": "center",
+                          "children": [
+                            {
+                              "type": "frame",
+                              "id": "aetz3",
+                              "name": "Item1BadgeConfirmed",
+                              "fill": "#ECFDF5",
+                              "cornerRadius": 4,
+                              "gap": 4,
+                              "padding": [
+                                2,
+                                6
+                              ],
+                              "alignItems": "center",
+                              "children": [
+                                {
+                                  "type": "text",
+                                  "id": "60zC9",
+                                  "name": "item1badge1text",
+                                  "fill": "#059669",
+                                  "content": "確定済 2",
+                                  "fontFamily": "Inter",
+                                  "fontSize": 10,
+                                  "fontWeight": "normal"
+                                }
+                              ]
+                            },
+                            {
+                              "type": "frame",
+                              "id": "AyMCm",
+                              "name": "Item1BadgeCompleted",
+                              "fill": "#F0FDF4",
+                              "cornerRadius": 4,
+                              "gap": 4,
+                              "padding": [
+                                2,
+                                6
+                              ],
+                              "alignItems": "center",
+                              "children": [
+                                {
+                                  "type": "text",
+                                  "id": "5Lhj9",
+                                  "name": "item1badge2text",
+                                  "fill": "#16A34A",
+                                  "content": "完了 1",
+                                  "fontFamily": "Inter",
+                                  "fontSize": 10,
+                                  "fontWeight": "normal"
+                                }
+                              ]
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "pJ9bJ",
+                      "name": "BatchHistoryItem2",
+                      "width": "fill_container",
+                      "stroke": {
+                        "align": "inside",
+                        "thickness": {
+                          "bottom": 1
+                        },
+                        "fill": "#E5E7EB"
+                      },
+                      "layout": "vertical",
+                      "gap": 6,
+                      "padding": [
+                        12,
+                        16
+                      ],
+                      "children": [
+                        {
+                          "type": "frame",
+                          "id": "xurjH",
+                          "name": "Item2Row1",
+                          "width": "fill_container",
+                          "justifyContent": "space_between",
+                          "alignItems": "center",
+                          "children": [
+                            {
+                              "type": "text",
+                              "id": "Q8Ifz",
+                              "name": "Item2Date",
+                              "fill": "#374151",
+                              "content": "2026-02-27 10:30",
+                              "fontFamily": "Inter",
+                              "fontSize": 12,
                               "fontWeight": "500"
+                            },
+                            {
+                              "type": "text",
+                              "id": "7dv77",
+                              "name": "Item2Files",
+                              "fill": "#6B7280",
+                              "content": "2枚",
+                              "fontFamily": "Inter",
+                              "fontSize": 11,
+                              "fontWeight": "normal"
+                            }
+                          ]
+                        },
+                        {
+                          "type": "frame",
+                          "id": "pnxk0",
+                          "name": "Item2Status",
+                          "gap": 6,
+                          "alignItems": "center",
+                          "children": [
+                            {
+                              "type": "frame",
+                              "id": "G4nz9",
+                              "name": "Item2BadgeConfirmed",
+                              "fill": "#ECFDF5",
+                              "cornerRadius": 4,
+                              "gap": 4,
+                              "padding": [
+                                2,
+                                6
+                              ],
+                              "alignItems": "center",
+                              "children": [
+                                {
+                                  "type": "text",
+                                  "id": "Tf86X",
+                                  "name": "item2badgetext",
+                                  "fill": "#059669",
+                                  "content": "確定済 2",
+                                  "fontFamily": "Inter",
+                                  "fontSize": 10,
+                                  "fontWeight": "normal"
+                                }
+                              ]
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "PNBYt",
+                      "name": "BatchHistoryItem3",
+                      "width": "fill_container",
+                      "stroke": {
+                        "align": "inside",
+                        "thickness": {
+                          "bottom": 1
+                        },
+                        "fill": "#E5E7EB"
+                      },
+                      "layout": "vertical",
+                      "gap": 6,
+                      "padding": [
+                        12,
+                        16
+                      ],
+                      "children": [
+                        {
+                          "type": "frame",
+                          "id": "7txmk",
+                          "name": "Item3Row1",
+                          "width": "fill_container",
+                          "justifyContent": "space_between",
+                          "alignItems": "center",
+                          "children": [
+                            {
+                              "type": "text",
+                              "id": "BnoEB",
+                              "name": "Item3Date",
+                              "fill": "#374151",
+                              "content": "2026-02-25 15:45",
+                              "fontFamily": "Inter",
+                              "fontSize": 12,
+                              "fontWeight": "500"
+                            },
+                            {
+                              "type": "text",
+                              "id": "pidWJ",
+                              "name": "Item3Files",
+                              "fill": "#6B7280",
+                              "content": "5枚",
+                              "fontFamily": "Inter",
+                              "fontSize": 11,
+                              "fontWeight": "normal"
+                            }
+                          ]
+                        },
+                        {
+                          "type": "frame",
+                          "id": "N547h",
+                          "name": "Item3Status",
+                          "gap": 6,
+                          "alignItems": "center",
+                          "children": [
+                            {
+                              "type": "frame",
+                              "id": "4cIOm",
+                              "name": "Item3BadgeConfirmed",
+                              "fill": "#ECFDF5",
+                              "cornerRadius": 4,
+                              "gap": 4,
+                              "padding": [
+                                2,
+                                6
+                              ],
+                              "alignItems": "center",
+                              "children": [
+                                {
+                                  "type": "text",
+                                  "id": "HreNq",
+                                  "name": "item3badge1text",
+                                  "fill": "#059669",
+                                  "content": "確定済 4",
+                                  "fontFamily": "Inter",
+                                  "fontSize": 10,
+                                  "fontWeight": "normal"
+                                }
+                              ]
+                            },
+                            {
+                              "type": "frame",
+                              "id": "bYyd7",
+                              "name": "Item3BadgeFailed",
+                              "fill": "#FEF2F2",
+                              "cornerRadius": 4,
+                              "gap": 4,
+                              "padding": [
+                                2,
+                                6
+                              ],
+                              "alignItems": "center",
+                              "children": [
+                                {
+                                  "type": "text",
+                                  "id": "4wNum",
+                                  "name": "item3badge2text",
+                                  "fill": "#DC2626",
+                                  "content": "失敗 1",
+                                  "fontFamily": "Inter",
+                                  "fontSize": 10,
+                                  "fontWeight": "normal"
+                                }
+                              ]
                             }
                           ]
                         }
@@ -2224,415 +1896,760 @@
             },
             {
               "type": "frame",
-              "id": "2TYBc",
-              "name": "EditSection",
+              "id": "TbHtn",
+              "name": "ContentArea",
               "width": "fill_container",
+              "height": "fill_container",
               "layout": "vertical",
-              "gap": 16,
+              "gap": 24,
+              "padding": [
+                32,
+                48
+              ],
               "children": [
                 {
-                  "type": "text",
-                  "id": "6aAKa",
-                  "name": "editTitle",
-                  "fill": "#1F2937",
-                  "content": "確認・編集: receipt_002.png",
-                  "fontFamily": "Inter",
-                  "fontSize": 16,
-                  "fontWeight": "600"
-                },
-                {
                   "type": "frame",
-                  "id": "yKjvD",
-                  "name": "EditColumns",
+                  "id": "8zVQe",
+                  "name": "ProgressSection",
                   "width": "fill_container",
-                  "gap": 32,
+                  "layout": "vertical",
+                  "gap": 12,
                   "children": [
                     {
+                      "type": "text",
+                      "id": "emki4",
+                      "name": "progressLabel",
+                      "fill": "#374151",
+                      "content": "3 / 5 完了",
+                      "fontFamily": "Inter",
+                      "fontSize": 14,
+                      "fontWeight": "500"
+                    },
+                    {
                       "type": "frame",
-                      "id": "AlGMV",
-                      "name": "ImagePreview",
-                      "width": 400,
-                      "height": 500,
-                      "fill": "#F9FAFB",
+                      "id": "653bZ",
+                      "name": "ProgressBarBg",
+                      "width": "fill_container",
+                      "height": 8,
+                      "fill": "#F3F4F6",
                       "cornerRadius": 4,
-                      "stroke": {
-                        "align": "inside",
-                        "thickness": 1,
-                        "fill": "#E5E7EB"
-                      },
-                      "layout": "vertical",
-                      "gap": 8,
-                      "justifyContent": "center",
-                      "alignItems": "center",
                       "children": [
                         {
-                          "type": "icon_font",
-                          "id": "yP3VE",
-                          "name": "imageIcon",
-                          "width": 48,
-                          "height": 48,
-                          "iconFontName": "image",
-                          "iconFontFamily": "lucide",
-                          "fill": "#D1D5DB"
-                        },
-                        {
-                          "type": "text",
-                          "id": "cWMkJ",
-                          "name": "imageLabel",
-                          "fill": "#9CA3AF",
-                          "content": "領収書プレビュー",
-                          "fontFamily": "Inter",
-                          "fontSize": 13,
-                          "fontWeight": "normal"
+                          "type": "frame",
+                          "id": "yXCQ7",
+                          "name": "ProgressBarFill",
+                          "width": 710,
+                          "height": "fill_container",
+                          "fill": "#22C55E",
+                          "cornerRadius": 4
                         }
                       ]
                     },
                     {
                       "type": "frame",
-                      "id": "qXSFJ",
-                      "name": "FormArea",
-                      "width": "fill_container",
-                      "layout": "vertical",
-                      "gap": 20,
+                      "id": "dnqo6",
+                      "name": "StatusBadges",
+                      "gap": 12,
                       "children": [
                         {
                           "type": "frame",
-                          "id": "AWf0t",
-                          "name": "Field-Date",
-                          "width": "fill_container",
-                          "layout": "vertical",
-                          "gap": 6,
-                          "children": [
-                            {
-                              "type": "frame",
-                              "id": "EuSF7",
-                              "name": "label1",
-                              "gap": 2,
-                              "children": [
-                                {
-                                  "type": "text",
-                                  "id": "M3pyl",
-                                  "name": "label1Text",
-                                  "fill": "#374151",
-                                  "content": "取引日",
-                                  "fontFamily": "Inter",
-                                  "fontSize": 13,
-                                  "fontWeight": "500"
-                                },
-                                {
-                                  "type": "text",
-                                  "id": "E5rmT",
-                                  "name": "label1Req",
-                                  "fill": "#DC2626",
-                                  "content": "*",
-                                  "fontFamily": "Inter",
-                                  "fontSize": 13,
-                                  "fontWeight": "500"
-                                }
-                              ]
-                            },
-                            {
-                              "type": "frame",
-                              "id": "vmWwK",
-                              "name": "input1",
-                              "width": "fill_container",
-                              "height": 40,
-                              "cornerRadius": 4,
-                              "stroke": {
-                                "align": "inside",
-                                "thickness": 1,
-                                "fill": "#D1D5DB"
-                              },
-                              "padding": [
-                                0,
-                                12
-                              ],
-                              "alignItems": "center",
-                              "children": [
-                                {
-                                  "type": "text",
-                                  "id": "T0XKi",
-                                  "name": "input1Text",
-                                  "fill": "#374151",
-                                  "content": "2026-02-15",
-                                  "fontFamily": "Inter",
-                                  "fontSize": 14,
-                                  "fontWeight": "normal"
-                                }
-                              ]
-                            }
-                          ]
-                        },
-                        {
-                          "type": "frame",
-                          "id": "vFnYc",
-                          "name": "Field-Amount",
-                          "width": "fill_container",
-                          "layout": "vertical",
-                          "gap": 6,
-                          "children": [
-                            {
-                              "type": "frame",
-                              "id": "HnWmC",
-                              "name": "label2",
-                              "gap": 2,
-                              "children": [
-                                {
-                                  "type": "text",
-                                  "id": "uGwKm",
-                                  "name": "label2Text",
-                                  "fill": "#374151",
-                                  "content": "金額（円）",
-                                  "fontFamily": "Inter",
-                                  "fontSize": 13,
-                                  "fontWeight": "500"
-                                },
-                                {
-                                  "type": "text",
-                                  "id": "jWDqp",
-                                  "name": "label2Req",
-                                  "fill": "#DC2626",
-                                  "content": "*",
-                                  "fontFamily": "Inter",
-                                  "fontSize": 13,
-                                  "fontWeight": "500"
-                                }
-                              ]
-                            },
-                            {
-                              "type": "frame",
-                              "id": "SFH8S",
-                              "name": "input2",
-                              "width": "fill_container",
-                              "height": 40,
-                              "cornerRadius": 4,
-                              "stroke": {
-                                "align": "inside",
-                                "thickness": 1,
-                                "fill": "#D1D5DB"
-                              },
-                              "padding": [
-                                0,
-                                12
-                              ],
-                              "alignItems": "center",
-                              "children": [
-                                {
-                                  "type": "text",
-                                  "id": "Ak61h",
-                                  "name": "input2Text",
-                                  "fill": "#374151",
-                                  "content": "3,980",
-                                  "fontFamily": "Inter",
-                                  "fontSize": 14,
-                                  "fontWeight": "normal"
-                                }
-                              ]
-                            }
-                          ]
-                        },
-                        {
-                          "type": "frame",
-                          "id": "6c46O",
-                          "name": "Field-Store",
-                          "width": "fill_container",
-                          "layout": "vertical",
-                          "gap": 6,
-                          "children": [
-                            {
-                              "type": "frame",
-                              "id": "1pjml",
-                              "name": "label3",
-                              "gap": 2,
-                              "children": [
-                                {
-                                  "type": "text",
-                                  "id": "dRZGs",
-                                  "name": "label3Text",
-                                  "fill": "#374151",
-                                  "content": "支払先",
-                                  "fontFamily": "Inter",
-                                  "fontSize": 13,
-                                  "fontWeight": "500"
-                                },
-                                {
-                                  "type": "text",
-                                  "id": "Rw8gE",
-                                  "name": "label3Req",
-                                  "fill": "#DC2626",
-                                  "content": "*",
-                                  "fontFamily": "Inter",
-                                  "fontSize": 13,
-                                  "fontWeight": "500"
-                                }
-                              ]
-                            },
-                            {
-                              "type": "frame",
-                              "id": "8eHdH",
-                              "name": "input3",
-                              "width": "fill_container",
-                              "height": 40,
-                              "cornerRadius": 4,
-                              "stroke": {
-                                "align": "inside",
-                                "thickness": 1,
-                                "fill": "#D1D5DB"
-                              },
-                              "padding": [
-                                0,
-                                12
-                              ],
-                              "alignItems": "center",
-                              "children": [
-                                {
-                                  "type": "text",
-                                  "id": "zcokc",
-                                  "name": "input3Text",
-                                  "fill": "#374151",
-                                  "content": "東京文具店",
-                                  "fontFamily": "Inter",
-                                  "fontSize": 14,
-                                  "fontWeight": "normal"
-                                }
-                              ]
-                            }
-                          ]
-                        },
-                        {
-                          "type": "frame",
-                          "id": "32PMT",
-                          "name": "Field-Description",
-                          "width": "fill_container",
-                          "layout": "vertical",
-                          "gap": 6,
+                          "id": "AEEV8",
+                          "name": "badge1",
+                          "fill": "#F3F4F6",
+                          "cornerRadius": 2,
+                          "gap": 4,
+                          "padding": [
+                            4,
+                            10
+                          ],
+                          "alignItems": "center",
                           "children": [
                             {
                               "type": "text",
-                              "id": "QMvYj",
-                              "name": "label4",
-                              "fill": "#374151",
-                              "content": "品目・明細",
+                              "id": "PVheF",
+                              "name": "badge1Text",
+                              "fill": "#6B7280",
+                              "content": "待機中: 1件",
                               "fontFamily": "Inter",
-                              "fontSize": 13,
-                              "fontWeight": "500"
-                            },
-                            {
-                              "type": "frame",
-                              "id": "OLowM",
-                              "name": "input4",
-                              "width": "fill_container",
-                              "height": 64,
-                              "cornerRadius": 4,
-                              "stroke": {
-                                "align": "inside",
-                                "thickness": 1,
-                                "fill": "#D1D5DB"
-                              },
-                              "padding": [
-                                8,
-                                12
-                              ],
-                              "children": [
-                                {
-                                  "type": "text",
-                                  "id": "otIRL",
-                                  "name": "input4Text",
-                                  "fill": "#374151",
-                                  "content": "コピー用紙 A4 500枚",
-                                  "fontFamily": "Inter",
-                                  "fontSize": 14,
-                                  "fontWeight": "normal"
-                                }
-                              ]
+                              "fontSize": 12,
+                              "fontWeight": "normal"
                             }
                           ]
                         },
                         {
                           "type": "frame",
-                          "id": "x0s5Z",
-                          "name": "Field-Tax",
-                          "width": "fill_container",
-                          "layout": "vertical",
-                          "gap": 6,
+                          "id": "wOluT",
+                          "name": "badge2",
+                          "fill": "#DBEAFE",
+                          "cornerRadius": 2,
+                          "gap": 4,
+                          "padding": [
+                            4,
+                            10
+                          ],
+                          "alignItems": "center",
                           "children": [
                             {
                               "type": "text",
-                              "id": "n6d1L",
-                              "name": "label5",
-                              "fill": "#374151",
-                              "content": "税区分",
+                              "id": "wgCcj",
+                              "name": "badge2Text",
+                              "fill": "#2563EB",
+                              "content": "処理中: 1件",
                               "fontFamily": "Inter",
-                              "fontSize": 13,
-                              "fontWeight": "500"
-                            },
-                            {
-                              "type": "frame",
-                              "id": "9nYxr",
-                              "name": "input5",
-                              "width": "fill_container",
-                              "height": 40,
-                              "cornerRadius": 4,
-                              "stroke": {
-                                "align": "inside",
-                                "thickness": 1,
-                                "fill": "#D1D5DB"
-                              },
-                              "padding": [
-                                0,
-                                12
-                              ],
-                              "justifyContent": "space_between",
-                              "alignItems": "center",
-                              "children": [
-                                {
-                                  "type": "text",
-                                  "id": "BNzHn",
-                                  "name": "input5Text",
-                                  "fill": "#374151",
-                                  "content": "10%",
-                                  "fontFamily": "Inter",
-                                  "fontSize": 14,
-                                  "fontWeight": "normal"
-                                },
-                                {
-                                  "type": "icon_font",
-                                  "id": "Lekn5",
-                                  "name": "input5Chevron",
-                                  "width": 16,
-                                  "height": 16,
-                                  "iconFontName": "chevron-down",
-                                  "iconFontFamily": "lucide",
-                                  "fill": "#9CA3AF"
-                                }
-                              ]
+                              "fontSize": 12,
+                              "fontWeight": "normal"
                             }
                           ]
                         },
                         {
                           "type": "frame",
-                          "id": "hFOld",
-                          "name": "OcrRawText",
-                          "width": "fill_container",
-                          "gap": 8,
+                          "id": "nvTPm",
+                          "name": "badge3",
+                          "fill": "#DCFCE7",
+                          "cornerRadius": 2,
+                          "gap": 4,
+                          "padding": [
+                            4,
+                            10
+                          ],
+                          "alignItems": "center",
+                          "children": [
+                            {
+                              "type": "text",
+                              "id": "N4Cwj",
+                              "name": "badge3Text",
+                              "fill": "#16A34A",
+                              "content": "完了: 1件",
+                              "fontFamily": "Inter",
+                              "fontSize": 12,
+                              "fontWeight": "normal"
+                            }
+                          ]
+                        },
+                        {
+                          "type": "frame",
+                          "id": "JC7bs",
+                          "name": "badge4",
+                          "fill": "#CCFBF1",
+                          "cornerRadius": 2,
+                          "gap": 4,
+                          "padding": [
+                            4,
+                            10
+                          ],
+                          "alignItems": "center",
+                          "children": [
+                            {
+                              "type": "text",
+                              "id": "ZwvQb",
+                              "name": "badge4Text",
+                              "fill": "#0D9488",
+                              "content": "確定済: 1件",
+                              "fontFamily": "Inter",
+                              "fontSize": 12,
+                              "fontWeight": "normal"
+                            }
+                          ]
+                        },
+                        {
+                          "type": "frame",
+                          "id": "srj1l",
+                          "name": "badge5",
+                          "fill": "#FEE2E2",
+                          "cornerRadius": 2,
+                          "gap": 4,
+                          "padding": [
+                            4,
+                            10
+                          ],
+                          "alignItems": "center",
+                          "children": [
+                            {
+                              "type": "text",
+                              "id": "nhhLf",
+                              "name": "badge5Text",
+                              "fill": "#DC2626",
+                              "content": "失敗: 1件",
+                              "fontFamily": "Inter",
+                              "fontSize": 12,
+                              "fontWeight": "normal"
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "zBKhl",
+                  "name": "JobList",
+                  "width": "fill_container",
+                  "cornerRadius": 4,
+                  "stroke": {
+                    "align": "inside",
+                    "thickness": 1,
+                    "fill": "#E5E7EB"
+                  },
+                  "layout": "vertical",
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "BJgOM",
+                      "name": "JobListHeader",
+                      "width": "fill_container",
+                      "height": 40,
+                      "fill": "#F9FAFB",
+                      "stroke": {
+                        "align": "inside",
+                        "thickness": {
+                          "bottom": 1
+                        },
+                        "fill": "#E5E7EB"
+                      },
+                      "padding": [
+                        0,
+                        16
+                      ],
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "MMzS3",
+                          "name": "jobListHeaderText",
+                          "fill": "#374151",
+                          "content": "ジョブ一覧",
+                          "fontFamily": "Inter",
+                          "fontSize": 13,
+                          "fontWeight": "600"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "i37MO",
+                      "name": "Job-Confirmed",
+                      "width": "fill_container",
+                      "height": 48,
+                      "stroke": {
+                        "align": "inside",
+                        "thickness": {
+                          "bottom": 1
+                        },
+                        "fill": "#F3F4F6"
+                      },
+                      "padding": [
+                        0,
+                        16
+                      ],
+                      "justifyContent": "space_between",
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "frame",
+                          "id": "yqBim",
+                          "name": "job1Left",
+                          "gap": 12,
                           "alignItems": "center",
                           "children": [
                             {
                               "type": "icon_font",
-                              "id": "SanNL",
-                              "name": "ocrToggle",
-                              "width": 14,
-                              "height": 14,
-                              "iconFontName": "chevron-right",
+                              "id": "imN62",
+                              "name": "job1Icon",
+                              "width": 16,
+                              "height": 16,
+                              "iconFontName": "image",
                               "iconFontFamily": "lucide",
                               "fill": "#6B7280"
                             },
                             {
                               "type": "text",
-                              "id": "atSNb",
-                              "name": "ocrToggleText",
-                              "fill": "#6B7280",
-                              "content": "OCR生テキストを表示",
+                              "id": "Crbrb",
+                              "name": "job1Name",
+                              "fill": "#374151",
+                              "content": "receipt_001.jpg",
+                              "fontFamily": "Inter",
+                              "fontSize": 14,
+                              "fontWeight": "normal"
+                            },
+                            {
+                              "type": "frame",
+                              "id": "lEb3R",
+                              "name": "job1Badge",
+                              "fill": "#CCFBF1",
+                              "cornerRadius": 2,
+                              "padding": [
+                                3,
+                                8
+                              ],
+                              "alignItems": "center",
+                              "children": [
+                                {
+                                  "type": "text",
+                                  "id": "NvjOo",
+                                  "name": "job1BadgeText",
+                                  "fill": "#0D9488",
+                                  "content": "確定済",
+                                  "fontFamily": "Inter",
+                                  "fontSize": 11,
+                                  "fontWeight": "500"
+                                }
+                              ]
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "TxZoo",
+                      "name": "Job-Completed",
+                      "width": "fill_container",
+                      "height": 48,
+                      "stroke": {
+                        "align": "inside",
+                        "thickness": {
+                          "bottom": 1
+                        },
+                        "fill": "#F3F4F6"
+                      },
+                      "padding": [
+                        0,
+                        16
+                      ],
+                      "justifyContent": "space_between",
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "frame",
+                          "id": "cKrsw",
+                          "name": "job2Left",
+                          "gap": 12,
+                          "alignItems": "center",
+                          "children": [
+                            {
+                              "type": "icon_font",
+                              "id": "4vvnf",
+                              "name": "job2Icon",
+                              "width": 16,
+                              "height": 16,
+                              "iconFontName": "image",
+                              "iconFontFamily": "lucide",
+                              "fill": "#6B7280"
+                            },
+                            {
+                              "type": "text",
+                              "id": "B4YAo",
+                              "name": "job2Name",
+                              "fill": "#374151",
+                              "content": "receipt_002.png",
+                              "fontFamily": "Inter",
+                              "fontSize": 14,
+                              "fontWeight": "normal"
+                            },
+                            {
+                              "type": "frame",
+                              "id": "7SwFn",
+                              "name": "job2Badge",
+                              "fill": "#DCFCE7",
+                              "cornerRadius": 2,
+                              "padding": [
+                                3,
+                                8
+                              ],
+                              "alignItems": "center",
+                              "children": [
+                                {
+                                  "type": "text",
+                                  "id": "3jD8V",
+                                  "name": "job2BadgeText",
+                                  "fill": "#16A34A",
+                                  "content": "完了",
+                                  "fontFamily": "Inter",
+                                  "fontSize": 11,
+                                  "fontWeight": "500"
+                                }
+                              ]
+                            }
+                          ]
+                        },
+                        {
+                          "type": "frame",
+                          "id": "H7iBU",
+                          "name": "job2Btn",
+                          "cornerRadius": 4,
+                          "stroke": {
+                            "align": "inside",
+                            "thickness": 1,
+                            "fill": "#3B82F6"
+                          },
+                          "padding": [
+                            6,
+                            16
+                          ],
+                          "alignItems": "center",
+                          "children": [
+                            {
+                              "type": "text",
+                              "id": "74KiJ",
+                              "name": "job2BtnText",
+                              "fill": "#3B82F6",
+                              "content": "確認・編集",
+                              "fontFamily": "Inter",
+                              "fontSize": 13,
+                              "fontWeight": "500"
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "MjoFW",
+                      "name": "Job-Processing",
+                      "width": "fill_container",
+                      "height": 48,
+                      "stroke": {
+                        "align": "inside",
+                        "thickness": {
+                          "bottom": 1
+                        },
+                        "fill": "#F3F4F6"
+                      },
+                      "padding": [
+                        0,
+                        16
+                      ],
+                      "justifyContent": "space_between",
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "frame",
+                          "id": "4szsJ",
+                          "name": "job3Left",
+                          "gap": 12,
+                          "alignItems": "center",
+                          "children": [
+                            {
+                              "type": "icon_font",
+                              "id": "qkqbo",
+                              "name": "job3Icon",
+                              "width": 16,
+                              "height": 16,
+                              "iconFontName": "file",
+                              "iconFontFamily": "lucide",
+                              "fill": "#6B7280"
+                            },
+                            {
+                              "type": "text",
+                              "id": "SmI3X",
+                              "name": "job3Name",
+                              "fill": "#374151",
+                              "content": "invoice_2026.pdf",
+                              "fontFamily": "Inter",
+                              "fontSize": 14,
+                              "fontWeight": "normal"
+                            },
+                            {
+                              "type": "frame",
+                              "id": "XV5nE",
+                              "name": "job3Badge",
+                              "fill": "#DBEAFE",
+                              "cornerRadius": 2,
+                              "padding": [
+                                3,
+                                8
+                              ],
+                              "alignItems": "center",
+                              "children": [
+                                {
+                                  "type": "text",
+                                  "id": "B2FbS",
+                                  "name": "job3BadgeText",
+                                  "fill": "#2563EB",
+                                  "content": "処理中",
+                                  "fontFamily": "Inter",
+                                  "fontSize": 11,
+                                  "fontWeight": "500"
+                                }
+                              ]
+                            }
+                          ]
+                        },
+                        {
+                          "type": "icon_font",
+                          "id": "U1Pe9",
+                          "name": "job3Spinner",
+                          "width": 16,
+                          "height": 16,
+                          "iconFontName": "loader",
+                          "iconFontFamily": "lucide",
+                          "fill": "#3B82F6"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "1RmZG",
+                      "name": "Job-Queued",
+                      "width": "fill_container",
+                      "height": 48,
+                      "stroke": {
+                        "align": "inside",
+                        "thickness": {
+                          "bottom": 1
+                        },
+                        "fill": "#F3F4F6"
+                      },
+                      "padding": [
+                        0,
+                        16
+                      ],
+                      "justifyContent": "space_between",
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "frame",
+                          "id": "vADsq",
+                          "name": "job4Left",
+                          "gap": 12,
+                          "alignItems": "center",
+                          "children": [
+                            {
+                              "type": "icon_font",
+                              "id": "VX82w",
+                              "name": "job4Icon",
+                              "width": 16,
+                              "height": 16,
+                              "iconFontName": "image",
+                              "iconFontFamily": "lucide",
+                              "fill": "#6B7280"
+                            },
+                            {
+                              "type": "text",
+                              "id": "YWDMx",
+                              "name": "job4Name",
+                              "fill": "#374151",
+                              "content": "receipt_003.jpg",
+                              "fontFamily": "Inter",
+                              "fontSize": 14,
+                              "fontWeight": "normal"
+                            },
+                            {
+                              "type": "frame",
+                              "id": "tgDJy",
+                              "name": "job4Badge",
+                              "fill": "#F3F4F6",
+                              "cornerRadius": 2,
+                              "padding": [
+                                3,
+                                8
+                              ],
+                              "alignItems": "center",
+                              "children": [
+                                {
+                                  "type": "text",
+                                  "id": "OUu25",
+                                  "name": "job4BadgeText",
+                                  "fill": "#6B7280",
+                                  "content": "待機中",
+                                  "fontFamily": "Inter",
+                                  "fontSize": 11,
+                                  "fontWeight": "500"
+                                }
+                              ]
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "G3ZIm",
+                      "name": "Job-Failed",
+                      "width": "fill_container",
+                      "height": 48,
+                      "padding": [
+                        0,
+                        16
+                      ],
+                      "justifyContent": "space_between",
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "frame",
+                          "id": "cH0Nq",
+                          "name": "job5Left",
+                          "gap": 12,
+                          "alignItems": "center",
+                          "children": [
+                            {
+                              "type": "icon_font",
+                              "id": "UECFU",
+                              "name": "job5Icon",
+                              "width": 16,
+                              "height": 16,
+                              "iconFontName": "image",
+                              "iconFontFamily": "lucide",
+                              "fill": "#6B7280"
+                            },
+                            {
+                              "type": "text",
+                              "id": "TdmRf",
+                              "name": "job5Name",
+                              "fill": "#374151",
+                              "content": "receipt_004.jpg",
+                              "fontFamily": "Inter",
+                              "fontSize": 14,
+                              "fontWeight": "normal"
+                            },
+                            {
+                              "type": "frame",
+                              "id": "iHTJh",
+                              "name": "job5Badge",
+                              "fill": "#FEE2E2",
+                              "cornerRadius": 2,
+                              "padding": [
+                                3,
+                                8
+                              ],
+                              "alignItems": "center",
+                              "children": [
+                                {
+                                  "type": "text",
+                                  "id": "6KIwx",
+                                  "name": "job5BadgeText",
+                                  "fill": "#DC2626",
+                                  "content": "失敗",
+                                  "fontFamily": "Inter",
+                                  "fontSize": 11,
+                                  "fontWeight": "500"
+                                }
+                              ]
+                            }
+                          ]
+                        },
+                        {
+                          "type": "frame",
+                          "id": "2xOWK",
+                          "name": "job5Right",
+                          "gap": 12,
+                          "alignItems": "center",
+                          "children": [
+                            {
+                              "type": "text",
+                              "id": "6OSch",
+                              "name": "job5Error",
+                              "fill": "#DC2626",
+                              "content": "OCR 処理がタイムアウトしました",
+                              "fontFamily": "Inter",
+                              "fontSize": 12,
+                              "fontWeight": "normal"
+                            },
+                            {
+                              "type": "frame",
+                              "id": "X417y",
+                              "name": "job5RetryBtn",
+                              "cornerRadius": 4,
+                              "stroke": {
+                                "align": "inside",
+                                "thickness": 1,
+                                "fill": "#DC2626"
+                              },
+                              "gap": 4,
+                              "padding": [
+                                6,
+                                16
+                              ],
+                              "alignItems": "center",
+                              "children": [
+                                {
+                                  "type": "icon_font",
+                                  "id": "5FW8P",
+                                  "name": "job5RetryIcon",
+                                  "width": 14,
+                                  "height": 14,
+                                  "iconFontName": "refresh-cw",
+                                  "iconFontFamily": "lucide",
+                                  "fill": "#DC2626"
+                                },
+                                {
+                                  "type": "text",
+                                  "id": "dbw7X",
+                                  "name": "job5RetryText",
+                                  "fill": "#DC2626",
+                                  "content": "再試行",
+                                  "fontFamily": "Inter",
+                                  "fontSize": 13,
+                                  "fontWeight": "500"
+                                }
+                              ]
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "2TYBc",
+                  "name": "EditSection",
+                  "width": "fill_container",
+                  "layout": "vertical",
+                  "gap": 16,
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "6aAKa",
+                      "name": "editTitle",
+                      "fill": "#1F2937",
+                      "content": "確認・編集: receipt_002.png",
+                      "fontFamily": "Inter",
+                      "fontSize": 16,
+                      "fontWeight": "600"
+                    },
+                    {
+                      "type": "frame",
+                      "id": "yKjvD",
+                      "name": "EditColumns",
+                      "width": "fill_container",
+                      "gap": 32,
+                      "children": [
+                        {
+                          "type": "frame",
+                          "id": "AlGMV",
+                          "name": "ImagePreview",
+                          "width": 400,
+                          "height": 500,
+                          "fill": "#F9FAFB",
+                          "cornerRadius": 4,
+                          "stroke": {
+                            "align": "inside",
+                            "thickness": 1,
+                            "fill": "#E5E7EB"
+                          },
+                          "layout": "vertical",
+                          "gap": 8,
+                          "justifyContent": "center",
+                          "alignItems": "center",
+                          "children": [
+                            {
+                              "type": "icon_font",
+                              "id": "yP3VE",
+                              "name": "imageIcon",
+                              "width": 48,
+                              "height": 48,
+                              "iconFontName": "image",
+                              "iconFontFamily": "lucide",
+                              "fill": "#D1D5DB"
+                            },
+                            {
+                              "type": "text",
+                              "id": "cWMkJ",
+                              "name": "imageLabel",
+                              "fill": "#9CA3AF",
+                              "content": "領収書プレビュー",
                               "fontFamily": "Inter",
                               "fontSize": 13,
                               "fontWeight": "normal"
@@ -2641,37 +2658,391 @@
                         },
                         {
                           "type": "frame",
-                          "id": "FQT1G",
-                          "name": "ConfirmButton",
-                          "fill": "#3B82F6",
-                          "cornerRadius": 4,
-                          "gap": 8,
-                          "padding": [
-                            12,
-                            32
-                          ],
-                          "justifyContent": "center",
-                          "alignItems": "center",
+                          "id": "qXSFJ",
+                          "name": "FormArea",
+                          "width": "fill_container",
+                          "layout": "vertical",
+                          "gap": 20,
                           "children": [
                             {
-                              "type": "icon_font",
-                              "id": "LLmQY",
-                              "name": "confirmIcon",
-                              "width": 16,
-                              "height": 16,
-                              "iconFontName": "check",
-                              "iconFontFamily": "lucide",
-                              "fill": "#FFFFFF"
+                              "type": "frame",
+                              "id": "AWf0t",
+                              "name": "Field-Date",
+                              "width": "fill_container",
+                              "layout": "vertical",
+                              "gap": 6,
+                              "children": [
+                                {
+                                  "type": "frame",
+                                  "id": "EuSF7",
+                                  "name": "label1",
+                                  "gap": 2,
+                                  "children": [
+                                    {
+                                      "type": "text",
+                                      "id": "M3pyl",
+                                      "name": "label1Text",
+                                      "fill": "#374151",
+                                      "content": "取引日",
+                                      "fontFamily": "Inter",
+                                      "fontSize": 13,
+                                      "fontWeight": "500"
+                                    },
+                                    {
+                                      "type": "text",
+                                      "id": "E5rmT",
+                                      "name": "label1Req",
+                                      "fill": "#DC2626",
+                                      "content": "*",
+                                      "fontFamily": "Inter",
+                                      "fontSize": 13,
+                                      "fontWeight": "500"
+                                    }
+                                  ]
+                                },
+                                {
+                                  "type": "frame",
+                                  "id": "vmWwK",
+                                  "name": "input1",
+                                  "width": "fill_container",
+                                  "height": 40,
+                                  "cornerRadius": 4,
+                                  "stroke": {
+                                    "align": "inside",
+                                    "thickness": 1,
+                                    "fill": "#D1D5DB"
+                                  },
+                                  "padding": [
+                                    0,
+                                    12
+                                  ],
+                                  "alignItems": "center",
+                                  "children": [
+                                    {
+                                      "type": "text",
+                                      "id": "T0XKi",
+                                      "name": "input1Text",
+                                      "fill": "#374151",
+                                      "content": "2026-02-15",
+                                      "fontFamily": "Inter",
+                                      "fontSize": 14,
+                                      "fontWeight": "normal"
+                                    }
+                                  ]
+                                }
+                              ]
                             },
                             {
-                              "type": "text",
-                              "id": "RgjGN",
-                              "name": "confirmLabel",
-                              "fill": "#FFFFFF",
-                              "content": "確定",
-                              "fontFamily": "Inter",
-                              "fontSize": 15,
-                              "fontWeight": "600"
+                              "type": "frame",
+                              "id": "vFnYc",
+                              "name": "Field-Amount",
+                              "width": "fill_container",
+                              "layout": "vertical",
+                              "gap": 6,
+                              "children": [
+                                {
+                                  "type": "frame",
+                                  "id": "HnWmC",
+                                  "name": "label2",
+                                  "gap": 2,
+                                  "children": [
+                                    {
+                                      "type": "text",
+                                      "id": "uGwKm",
+                                      "name": "label2Text",
+                                      "fill": "#374151",
+                                      "content": "金額（円）",
+                                      "fontFamily": "Inter",
+                                      "fontSize": 13,
+                                      "fontWeight": "500"
+                                    },
+                                    {
+                                      "type": "text",
+                                      "id": "jWDqp",
+                                      "name": "label2Req",
+                                      "fill": "#DC2626",
+                                      "content": "*",
+                                      "fontFamily": "Inter",
+                                      "fontSize": 13,
+                                      "fontWeight": "500"
+                                    }
+                                  ]
+                                },
+                                {
+                                  "type": "frame",
+                                  "id": "SFH8S",
+                                  "name": "input2",
+                                  "width": "fill_container",
+                                  "height": 40,
+                                  "cornerRadius": 4,
+                                  "stroke": {
+                                    "align": "inside",
+                                    "thickness": 1,
+                                    "fill": "#D1D5DB"
+                                  },
+                                  "padding": [
+                                    0,
+                                    12
+                                  ],
+                                  "alignItems": "center",
+                                  "children": [
+                                    {
+                                      "type": "text",
+                                      "id": "Ak61h",
+                                      "name": "input2Text",
+                                      "fill": "#374151",
+                                      "content": "3,980",
+                                      "fontFamily": "Inter",
+                                      "fontSize": 14,
+                                      "fontWeight": "normal"
+                                    }
+                                  ]
+                                }
+                              ]
+                            },
+                            {
+                              "type": "frame",
+                              "id": "6c46O",
+                              "name": "Field-Store",
+                              "width": "fill_container",
+                              "layout": "vertical",
+                              "gap": 6,
+                              "children": [
+                                {
+                                  "type": "frame",
+                                  "id": "1pjml",
+                                  "name": "label3",
+                                  "gap": 2,
+                                  "children": [
+                                    {
+                                      "type": "text",
+                                      "id": "dRZGs",
+                                      "name": "label3Text",
+                                      "fill": "#374151",
+                                      "content": "支払先",
+                                      "fontFamily": "Inter",
+                                      "fontSize": 13,
+                                      "fontWeight": "500"
+                                    },
+                                    {
+                                      "type": "text",
+                                      "id": "Rw8gE",
+                                      "name": "label3Req",
+                                      "fill": "#DC2626",
+                                      "content": "*",
+                                      "fontFamily": "Inter",
+                                      "fontSize": 13,
+                                      "fontWeight": "500"
+                                    }
+                                  ]
+                                },
+                                {
+                                  "type": "frame",
+                                  "id": "8eHdH",
+                                  "name": "input3",
+                                  "width": "fill_container",
+                                  "height": 40,
+                                  "cornerRadius": 4,
+                                  "stroke": {
+                                    "align": "inside",
+                                    "thickness": 1,
+                                    "fill": "#D1D5DB"
+                                  },
+                                  "padding": [
+                                    0,
+                                    12
+                                  ],
+                                  "alignItems": "center",
+                                  "children": [
+                                    {
+                                      "type": "text",
+                                      "id": "zcokc",
+                                      "name": "input3Text",
+                                      "fill": "#374151",
+                                      "content": "東京文具店",
+                                      "fontFamily": "Inter",
+                                      "fontSize": 14,
+                                      "fontWeight": "normal"
+                                    }
+                                  ]
+                                }
+                              ]
+                            },
+                            {
+                              "type": "frame",
+                              "id": "32PMT",
+                              "name": "Field-Description",
+                              "width": "fill_container",
+                              "layout": "vertical",
+                              "gap": 6,
+                              "children": [
+                                {
+                                  "type": "text",
+                                  "id": "QMvYj",
+                                  "name": "label4",
+                                  "fill": "#374151",
+                                  "content": "品目・明細",
+                                  "fontFamily": "Inter",
+                                  "fontSize": 13,
+                                  "fontWeight": "500"
+                                },
+                                {
+                                  "type": "frame",
+                                  "id": "OLowM",
+                                  "name": "input4",
+                                  "width": "fill_container",
+                                  "height": 64,
+                                  "cornerRadius": 4,
+                                  "stroke": {
+                                    "align": "inside",
+                                    "thickness": 1,
+                                    "fill": "#D1D5DB"
+                                  },
+                                  "padding": [
+                                    8,
+                                    12
+                                  ],
+                                  "children": [
+                                    {
+                                      "type": "text",
+                                      "id": "otIRL",
+                                      "name": "input4Text",
+                                      "fill": "#374151",
+                                      "content": "コピー用紙 A4 500枚",
+                                      "fontFamily": "Inter",
+                                      "fontSize": 14,
+                                      "fontWeight": "normal"
+                                    }
+                                  ]
+                                }
+                              ]
+                            },
+                            {
+                              "type": "frame",
+                              "id": "x0s5Z",
+                              "name": "Field-Tax",
+                              "width": "fill_container",
+                              "layout": "vertical",
+                              "gap": 6,
+                              "children": [
+                                {
+                                  "type": "text",
+                                  "id": "n6d1L",
+                                  "name": "label5",
+                                  "fill": "#374151",
+                                  "content": "税区分",
+                                  "fontFamily": "Inter",
+                                  "fontSize": 13,
+                                  "fontWeight": "500"
+                                },
+                                {
+                                  "type": "frame",
+                                  "id": "9nYxr",
+                                  "name": "input5",
+                                  "width": "fill_container",
+                                  "height": 40,
+                                  "cornerRadius": 4,
+                                  "stroke": {
+                                    "align": "inside",
+                                    "thickness": 1,
+                                    "fill": "#D1D5DB"
+                                  },
+                                  "padding": [
+                                    0,
+                                    12
+                                  ],
+                                  "justifyContent": "space_between",
+                                  "alignItems": "center",
+                                  "children": [
+                                    {
+                                      "type": "text",
+                                      "id": "BNzHn",
+                                      "name": "input5Text",
+                                      "fill": "#374151",
+                                      "content": "10%",
+                                      "fontFamily": "Inter",
+                                      "fontSize": 14,
+                                      "fontWeight": "normal"
+                                    },
+                                    {
+                                      "type": "icon_font",
+                                      "id": "Lekn5",
+                                      "name": "input5Chevron",
+                                      "width": 16,
+                                      "height": 16,
+                                      "iconFontName": "chevron-down",
+                                      "iconFontFamily": "lucide",
+                                      "fill": "#9CA3AF"
+                                    }
+                                  ]
+                                }
+                              ]
+                            },
+                            {
+                              "type": "frame",
+                              "id": "hFOld",
+                              "name": "OcrRawText",
+                              "width": "fill_container",
+                              "gap": 8,
+                              "alignItems": "center",
+                              "children": [
+                                {
+                                  "type": "icon_font",
+                                  "id": "SanNL",
+                                  "name": "ocrToggle",
+                                  "width": 14,
+                                  "height": 14,
+                                  "iconFontName": "chevron-right",
+                                  "iconFontFamily": "lucide",
+                                  "fill": "#6B7280"
+                                },
+                                {
+                                  "type": "text",
+                                  "id": "atSNb",
+                                  "name": "ocrToggleText",
+                                  "fill": "#6B7280",
+                                  "content": "OCR生テキストを表示",
+                                  "fontFamily": "Inter",
+                                  "fontSize": 13,
+                                  "fontWeight": "normal"
+                                }
+                              ]
+                            },
+                            {
+                              "type": "frame",
+                              "id": "FQT1G",
+                              "name": "ConfirmButton",
+                              "fill": "#3B82F6",
+                              "cornerRadius": 4,
+                              "gap": 8,
+                              "padding": [
+                                12,
+                                32
+                              ],
+                              "justifyContent": "center",
+                              "alignItems": "center",
+                              "children": [
+                                {
+                                  "type": "icon_font",
+                                  "id": "LLmQY",
+                                  "name": "confirmIcon",
+                                  "width": 16,
+                                  "height": 16,
+                                  "iconFontName": "check",
+                                  "iconFontFamily": "lucide",
+                                  "fill": "#FFFFFF"
+                                },
+                                {
+                                  "type": "text",
+                                  "id": "RgjGN",
+                                  "name": "confirmLabel",
+                                  "fill": "#FFFFFF",
+                                  "content": "確定",
+                                  "fontFamily": "Inter",
+                                  "fontSize": 15,
+                                  "fontWeight": "600"
+                                }
+                              ]
                             }
                           ]
                         }

@@ -449,6 +449,19 @@ PostgreSQL のトリガー関数で `updated_at` を自動更新する。
 | totalFiles      | upload_batches.total_files |
 
 
+### upload_batches + ocr_jobs -> GET /api/upload-batches レスポンス（バッチ一覧）
+
+
+| API フィールド          | DB カラム / 算出方法                                       |
+| -------------------- | -------------------------------------------------------- |
+| content[].batchId    | upload_batches.id                                        |
+| content[].totalFiles | upload_batches.total_files                               |
+| content[].summary.*  | ocr_jobs の status を GROUP BY で集計（batch_id で絞り込み） |
+| content[].createdAt  | upload_batches.created_at                                |
+
+`summary` の各フィールド（total, queued, processing, completed, confirmed, failed）は `ocr_jobs` テーブルの `status` カラムを `COUNT` + `CASE WHEN` で集計して算出する。
+
+
 ### ocr_jobs -> GET /api/ocr-jobs/{jobId} レスポンス
 
 
@@ -480,5 +493,5 @@ PostgreSQL のトリガー関数で `updated_at` を自動更新する。
 ---
 
 **作成日**: 2026-02-28
-**版数**: 1.0
-**ステータス**: 初版作成
+**版数**: 1.1
+**ステータス**: バッチ一覧 API マッピング追加
