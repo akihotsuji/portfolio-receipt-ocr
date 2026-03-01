@@ -45,7 +45,7 @@ http://localhost:5175/receipt-ocr/
 
 ```bash
 cd ../infrastructure/docker
-docker compose -f docker-compose.all.yml up -d
+docker compose -f docker-compose.unified.yml up -d
 ```
 
 http://localhost:3000/receipt-ocr/

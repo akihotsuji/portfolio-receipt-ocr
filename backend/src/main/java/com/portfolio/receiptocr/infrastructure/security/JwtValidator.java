@@ -4,8 +4,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.client.SimpleClientHttpRequestFactory;
 import org.springframework.stereotype.Component;
-import org.springframework.web.client.HttpClientErrorException;
-import org.springframework.web.client.HttpServerErrorException;
 import org.springframework.web.client.RestTemplate;
 
 import com.nimbusds.jose.jwk.JWK;
@@ -32,7 +30,7 @@ public class JwtValidator {
     private static final int CONNECT_TIMEOUT_MS = 5000;
     private static final int READ_TIMEOUT_MS = 5000;
 
-    private RSAPublicKey publicKey;
+    private volatile RSAPublicKey publicKey;
 
     public JwtValidator(JwtConfig jwtConfig) {
         this.jwtConfig = jwtConfig;
@@ -45,45 +43,60 @@ public class JwtValidator {
     }
 
     @PostConstruct
-    public void loadPublicKey() {
+    public void init() {
         try {
-            String jwksUri = jwtConfig.getJwksUri();
-
-            if (!jwksUri.startsWith("https://")) {
-                logger.warn("JWKS URI is not using HTTPS: {}. This is insecure in production", jwksUri);
-            }
-
-            logger.info("Loading public key from JWKS: {}", jwksUri);
-
-            String jwksJson = restTemplate.getForObject(jwksUri, String.class);
-
-            if (jwksJson == null || jwksJson.isEmpty()) {
-                throw new RuntimeException("JWKS endpoint returned empty response");
-            }
-
-            JWKSet jwkSet = JWKSet.parse(jwksJson);
-
-            if (jwkSet.getKeys().isEmpty()) {
-                throw new RuntimeException("JWKS endpoint returned no keys");
-            }
-
-            JWK jwk = jwkSet.getKeys().get(0);
-            if (!(jwk instanceof RSAKey)) {
-                throw new RuntimeException("JWKS must contain RSA key, found: " + jwk.getKeyType());
-            }
-            RSAKey rsaKey = (RSAKey) jwk;
-
-            this.publicKey = rsaKey.toRSAPublicKey();
-
-            logger.info("Public key loaded successfully (kid: {})", jwk.getKeyID());
-        } catch (HttpClientErrorException | HttpServerErrorException e) {
-            logger.error("Failed to load public key: HTTP {} - {}",
-                    e.getStatusCode(), e.getStatusText());
-            throw new RuntimeException("Failed to initialize JWT validator: HTTP error");
+            loadPublicKey();
         } catch (Exception e) {
-            logger.error("Failed to load public key from JWKS", e);
-            throw new RuntimeException("Failed to initialize JWT validator", e);
+            logger.warn("JWKS is not available yet — public key will be loaded on first request. Cause: {}", e.getMessage());
         }
+    }
+
+    private synchronized void loadPublicKey() {
+        String jwksUri = jwtConfig.getJwksUri();
+
+        if (!jwksUri.startsWith("https://")) {
+            logger.warn("JWKS URI is not using HTTPS: {}. This is insecure in production", jwksUri);
+        }
+
+        logger.info("Loading public key from JWKS: {}", jwksUri);
+
+        String jwksJson = restTemplate.getForObject(jwksUri, String.class);
+
+        if (jwksJson == null || jwksJson.isEmpty()) {
+            throw new RuntimeException("JWKS endpoint returned empty response");
+        }
+
+        JWKSet jwkSet;
+        try {
+            jwkSet = JWKSet.parse(jwksJson);
+        } catch (java.text.ParseException e) {
+            throw new RuntimeException("Failed to parse JWKS response", e);
+        }
+
+        if (jwkSet.getKeys().isEmpty()) {
+            throw new RuntimeException("JWKS endpoint returned no keys");
+        }
+
+        JWK jwk = jwkSet.getKeys().get(0);
+        if (!(jwk instanceof RSAKey)) {
+            throw new RuntimeException("JWKS must contain RSA key, found: " + jwk.getKeyType());
+        }
+        RSAKey rsaKey = (RSAKey) jwk;
+
+        try {
+            this.publicKey = rsaKey.toRSAPublicKey();
+        } catch (com.nimbusds.jose.JOSEException e) {
+            throw new RuntimeException("Failed to extract RSA public key", e);
+        }
+
+        logger.info("Public key loaded successfully (kid: {})", jwk.getKeyID());
+    }
+
+    private RSAPublicKey getPublicKey() {
+        if (publicKey == null) {
+            loadPublicKey();
+        }
+        return publicKey;
     }
 
     public String validateToken(String token)
@@ -100,7 +113,7 @@ public class JwtValidator {
         }
 
         try {
-            JWSVerifier verifier = new RSASSAVerifier(publicKey);
+            JWSVerifier verifier = new RSASSAVerifier(getPublicKey());
             if (!signedJWT.verify(verifier)) {
                 throw new JwtValidationException("Invalid JWT signature");
             }
