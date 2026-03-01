@@ -41,13 +41,18 @@ public interface OcrJobMapper {
 uploadbatch ──→ ocrjob ──→ receipt ←── export
 ```
 
-### ワーカーは API と同一プロセスで同居（重要！）
+### OCR ワーカーは API と同居、エクスポートは Lambda（重要！）
 
-**SQS リスナー（`@SqsListener`）は各機能モジュール内の infrastructure/messaging に配置する**
+**OCR ワーカーは Spring Boot 内の `@SqsListener` で処理する**
 
 - OCR ワーカーは `ocrjob/infrastructure/messaging/OcrJobMessageListener.java`
-- エクスポートワーカーは `export/infrastructure/messaging/ExportJobMessageListener.java`
-- 別プロセスには分離しない（学習目的のため構成をシンプルに保つ）
+- Tesseract OCR のネイティブライブラリ統合のため Spring Boot 内に同居
+
+**エクスポート処理は AWS Lambda で実行する**
+
+- Lambda プロジェクトは `lambda/export-csv/` に独立配置
+- SQS `receipt-export-queue` のイベントソースマッピングで起動
+- Spring Boot 側はジョブ作成・ステータス取得・ダウンロード API のみ提供
 
 ---
 
@@ -75,7 +80,7 @@ uploadbatch ──→ ocrjob ──→ receipt ←── export
 ### 4. エクスポート（Phase 6）
 
 - 選択レシートの CSV エクスポートジョブ作成 → SQS 投入
-- ワーカーが CSV 生成 → MinIO に保存
+- AWS Lambda が CSV 生成 → S3 に保存
 - 完了後にダウンロードエンドポイントで CSV 返却
 
 ---
@@ -345,26 +350,25 @@ SQS へのメッセージ送信が動作する状態にする。
 
 ---
 
-- [ ] **Task 2.4**: SQS ワーカー並列数（OCR=3 / Export=3）の設定
+- [ ] **Task 2.4**: SQS ワーカー並列数（OCR=3）の設定
 
-  - **目的**: 要件定義の並列処理要件（OCR N=3、Export M=3）を
+  - **目的**: 要件定義の並列処理要件（OCR N=3）を
     `@SqsListener` 実行基盤で確実に満たす
   - **やること**:
     - `application.yml` と Messaging 設定クラスで SQS リスナーの並列実行数を設定:
       - OCR ワーカー: 3 並列
-      - エクスポートワーカー: 3 並列
     - 必要に応じて Listener ごとに `factory` を分けて並列数を個別指定
     - ローカル検証:
       - OCR キューに 10 件投入し、同時実行が最大 3 であることを確認
-      - Export キューに 10 件投入し、同時実行が最大 3 であることを確認
   - **完了条件**:
-    - OCR / Export の両ワーカーで並列数 3 が実測で確認できる
+    - OCR ワーカーで並列数 3 が実測で確認できる
     - 並列数を設定値で変更できる（ハードコードしない）
   - **参照**:
     - `@docs/1.要件定義/要件定義書.md` の §3.2（OCR N=3 / Export M=3）
-    - `@docs/2.基本設計/非同期処理フロー設計書.md` の §4.2（スレッドプール設定）
+    - `@docs/2.基本設計/非同期処理フロー設計書.md` の §4.2（並列数設定）
   - **依存**: Task 1.2, Task 2.2
-  - **推定時間**: 45分
+  - **推定時間**: 30分
+  - **備考**: エクスポートの並列数は Lambda の `ReservedConcurrentExecutions: 3` で制御する（Task 6.6A で設定）
 
 ---
 
@@ -373,7 +377,8 @@ SQS へのメッセージ送信が動作する状態にする。
 **この Phase のゴール**:
 フロントエンドから multipart/form-data でファイルをアップロードし、
 MinIO に保存 → DB にバッチ・ジョブレコード作成 → SQS にメッセージ投入が完了する状態にする。
-また、バッチのステータスをポーリング（2秒間隔）で取得できるエンドポイントを提供する。
+また、バッチのステータスをポーリング（2秒間隔）で取得できるエンドポイントと、
+バッチ一覧を取得できるエンドポイントを提供する。
 
 **共通参照**:
 
@@ -502,6 +507,37 @@ MinIO に保存 → DB にバッチ・ジョブレコード作成 → SQS にメ
     - `@docs/2.基本設計/API設計書.md` の §5.1（レスポンス JSON 例）
     - `@docs/3.詳細設計/バックエンドクラス設計書.md` の §5.1（クラス一覧）
   - **依存**: Task 3.4
+  - **推定時間**: 1時間
+
+---
+
+- [ ] **Task 3.6**: バッチ一覧取得 API の追加
+
+  - **目的**: 画面B のバッチ履歴サイドバーで使用する、ログインユーザーのバッチ一覧取得エンドポイントを実装する
+  - **やること**:
+    - `uploadbatch/domain/repository/UploadBatchRepository.java` にメソッド追加:
+      - `findByUserId(String userId, int offset, int limit): List<UploadBatch>` — ユーザーのバッチ一覧取得
+      - `countByUserId(String userId): long` — ユーザーのバッチ総数取得
+    - `uploadbatch/infrastructure/mybatis/UploadBatchMapper.java` に追加:
+      - `findByUserId(String userId, int offset, int limit)` — SELECT（createdAt DESC でソート + LIMIT/OFFSET）
+      - `countByUserId(String userId)` — COUNT
+    - `UploadBatchMapper.xml` に SQL 追加:
+      - バッチ一覧取得 SQL（`upload_batches` + `ocr_jobs` のステータス集計を JOIN）
+    - `uploadbatch/application/UploadBatchService.java` にメソッド追加:
+      - `getBatches(String userId, int page, int size)`: バッチ一覧を取得し、各バッチの summary（ステータス別件数）を含むレスポンスを返却
+    - `uploadbatch/presentation/dto/response/BatchListResponse.java` — record:
+      - batchId, totalFiles, summary (Summary), createdAt
+    - `uploadbatch/presentation/UploadBatchController.java` にエンドポイント追加:
+      - `GET /api/upload-batches` — クエリパラメータ（page, size, sort, order）を受付、`PageResponse<BatchListResponse>` を返却
+  - **完了条件**:
+    - `GET /api/upload-batches` がページング付きでバッチ一覧を返す
+    - 各バッチに summary（total, queued, processing, completed, confirmed, failed）が含まれる
+    - 他ユーザーのバッチは返却されない（user_id でフィルタ）
+    - createdAt DESC がデフォルトソート
+  - **参照**:
+    - `@docs/2.基本設計/API設計書.md` の §5.1 GET /api/upload-batches（レスポンス JSON 例）
+    - `@docs/2.基本設計/DBスキーマ設計書.md` の §6 API レスポンスマッピング
+  - **依存**: Task 3.1, Task 3.2, Task 1.5（PageResponse）
   - **推定時間**: 1時間
 
 ---
@@ -917,8 +953,10 @@ MyBatis の動的 SQL（`<if>`, `<where>`）を活用する。
 
 **この Phase のゴール**:
 選択したレシートの CSV エクスポートジョブを作成し、
-SQS ワーカーが CSV を生成して MinIO に保存、
+Lambda が CSV を生成して S3 に保存、
 完了後にダウンロードエンドポイントで CSV を返却できる状態にする。
+Spring Boot 側はジョブ作成・ステータス取得・ダウンロード API を提供し、
+CSV 生成処理は Lambda プロジェクト（`lambda/export-csv/`）で実装する。
 
 **共通参照**:
 
@@ -995,11 +1033,121 @@ SQS ワーカーが CSV を生成して MinIO に保存、
 
 ---
 
-- [ ] **Task 6.4**: CsvGenerator の作成
+- [ ] **Task 6.4**: ExportJobMessage DTO の作成
 
-  - **目的**: レシートデータから CSV バイト列を生成するユーティリティを実装する
+  - **目的**: SQS メッセージの DTO を Spring Boot 側に作成し、キュー投入で使用する
   - **やること**:
-    - `export/application/CsvGenerator.java`:
+    - `export/infrastructure/messaging/ExportJobMessage.java` — record:
+      - exportId (UUID), userId (String)
+  - **完了条件**:
+    - SQS メッセージの JSON シリアライズ/デシリアライズが正しく動作する
+  - **参照**:
+    - `@docs/2.基本設計/非同期処理フロー設計書.md` の §3.4（メッセージ形式）
+  - **推定時間**: 10分
+
+---
+
+- [ ] **Task 6.5**: ExportService の作成（Spring Boot 側）
+
+  - **目的**: エクスポートジョブの作成・ステータス取得・ダウンロードのビジネスロジックを実装する。
+    CSV 生成処理は Lambda で実行するため Spring Boot 側には含めない
+  - **やること**:
+    - `export/application/ExportService.java`:
+      - `createExport(List<UUID> receiptIds, String userId)`:
+        1. receiptIds の存在確認（空ならバリデーションエラー）
+        2. エクスポートジョブレコードを DB に INSERT（status=QUEUED）
+        3. 中間テーブル（export_job_receipts）に対象レシート ID を INSERT
+        4. SQS にメッセージ送信（exportId, userId）
+        5. `ExportJobResponse` を返却
+      - `getExportStatus(UUID exportId, String userId)` — ステータス取得
+      - `downloadExport(UUID exportId, String userId)`:
+        - ステータスが COMPLETED でなければ `EXPORT_NOT_READY`
+        - S3 から CSV を取得して返却
+    - `@Transactional` でトランザクション管理
+  - **完了条件**:
+    - エクスポートジョブ作成 → SQS 投入の一連のフローが動作する
+    - 空の receiptIds でバリデーションエラーが返る
+    - 未完了のエクスポートのダウンロードが `EXPORT_NOT_READY` で拒否される
+  - **参照**:
+    - `@docs/3.詳細設計/シーケンス図.md` の §4.1（エクスポートシーケンス）
+    - `@docs/2.基本設計/非同期処理フロー設計書.md` の §2.2 エクスポートフロー
+    - `@docs/3.詳細設計/エラーハンドリング設計書.md` の §8.2 エクスポート Lambda
+  - **依存**: Task 6.1, Task 6.2, Task 6.3, Task 6.4, Task 2.1, Task 2.2
+  - **推定時間**: 1時間
+
+---
+
+- [ ] **Task 6.6A**: Lambda プロジェクトのセットアップ
+
+  - **目的**: エクスポート CSV 生成用の Lambda プロジェクトを作成し、
+    SAM テンプレートでデプロイ構成を定義する
+  - **やること**:
+    - `lambda/export-csv/` ディレクトリを作成
+    - `pom.xml` に以下の依存関係を追加:
+      - `com.amazonaws:aws-lambda-java-core`（Lambda ランタイム）
+      - `com.amazonaws:aws-lambda-java-events`（SQSEvent）
+      - `software.amazon.awssdk:s3`（S3 クライアント）
+      - `org.postgresql:postgresql`（JDBC ドライバ）
+      - `com.zaxxer:HikariCP`（コネクションプーリング）
+      - `com.fasterxml.jackson.core:jackson-databind`（JSON パース）
+    - `template.yaml`（SAM テンプレート）を作成:
+      - `ExportCsvFunction` リソース定義
+      - ランタイム: `java21`
+      - ハンドラー: `com.portfolio.receiptocr.lambda.exportcsv.ExportCsvHandler::handleRequest`
+      - タイムアウト: 300 秒
+      - メモリ: 512 MB
+      - `ReservedConcurrentExecutions: 3`
+      - SQS イベントソースマッピング（`receipt-export-queue`、バッチサイズ 1）
+      - 環境変数: DB 接続情報、S3 バケット名
+    - `events/test-event.json` にテスト用の SQS イベントを定義
+  - **完了条件**:
+    - `mvn compile` がエラーなく通る
+    - `sam validate` が成功する
+    - `sam build` でビルドが成功する
+  - **参照**:
+    - `@docs/3.詳細設計/バックエンドクラス設計書.md` の §2 Lambda プロジェクト構成
+    - `@docs/2.基本設計/非同期処理フロー設計書.md` の §4.2（Lambda 同時実行数）, §8.4（Lambda 設計判断）
+  - **推定時間**: 1時間
+
+---
+
+- [ ] **Task 6.6B**: ExportCsvHandler（Lambda エントリポイント）の作成
+
+  - **目的**: SQS イベントを受信して CSV 生成処理を実行する Lambda 関数を実装する
+  - **やること**:
+    - `ExportCsvHandler.java`:
+      - `RequestHandler<SQSEvent, Void>` を実装
+      - SQS メッセージから `exportId` と `userId` を JSON パース
+      - DB ステータスを PROCESSING に更新
+      - `export_job_receipts` + `receipts` を JOIN して対象レシートを取得
+      - `CsvGenerator.generate()` で CSV 生成
+      - S3 に CSV を保存（storageKey: `exports/{exportId}/{fileName}`）
+      - DB ステータスを COMPLETED に更新、fileName / storageKey を記録
+      - 失敗時: DB ステータスを FAILED に更新、error_message を記録、例外を再スロー
+    - `ExportJobDao.java`: JDBC による export_jobs 操作
+    - `ReceiptDao.java`: JDBC による receipts 取得
+    - `model/ExportJob.java` / `model/Receipt.java`: 軽量モデル
+    - コネクションプーリング:
+      - HikariCP の DataSource をハンドラーのコンストラクタで初期化（Lambda の再利用に対応）
+      - Lambda のコールドスタート時にのみ接続を確立
+  - **完了条件**:
+    - `sam local invoke` でテストイベントを入力し、CSV が S3 に保存される
+    - DB のステータスが COMPLETED に更新される
+    - 失敗時に DB ステータスが FAILED に更新され、RuntimeException がスローされる
+  - **参照**:
+    - `@docs/3.詳細設計/シーケンス図.md` の §4.1（エクスポートシーケンス）
+    - `@docs/3.詳細設計/エラーハンドリング設計書.md` の §6.5（Lambda エラーハンドリング）, §8.2
+    - `@docs/2.基本設計/API設計書.md` の §5.4 CSV フォーマット
+  - **依存**: Task 6.6A
+  - **推定時間**: 2時間30分
+
+---
+
+- [ ] **Task 6.6C**: CsvGenerator（Lambda 側）の作成
+
+  - **目的**: レシートデータから CSV バイト列を生成するロジックを Lambda プロジェクト内に実装する
+  - **やること**:
+    - `lambda/export-csv/.../CsvGenerator.java`:
       - `generate(List<Receipt> receipts): byte[]` — UTF-8 BOM 付き CSV を生成
       - ヘッダー行: `日付,金額,支払先,品目,税区分`
       - 各レシートのデータ行を出力
@@ -1011,66 +1159,8 @@ SQS ワーカーが CSV を生成して MinIO に保存、
     - UTF-8 BOM が付与されている
   - **参照**:
     - `@docs/2.基本設計/API設計書.md` の §5.4 CSV フォーマット
+  - **依存**: Task 6.6A
   - **推定時間**: 45分
-
----
-
-- [ ] **Task 6.5**: ExportService の作成
-
-  - **目的**: エクスポートジョブの作成・CSV 生成処理・ダウンロードのビジネスロジックを統合する
-  - **やること**:
-    - `export/application/ExportService.java`:
-      - `createExport(List<UUID> receiptIds, String userId)`:
-        1. receiptIds の存在確認（空ならバリデーションエラー）
-        2. エクスポートジョブレコードを DB に INSERT（status=QUEUED）
-        3. 中間テーブル（export_job_receipts）に対象レシート ID を INSERT
-        4. SQS にメッセージ送信（exportId, userId）
-        5. `ExportJobResponse` を返却
-      - `processExport(ExportJobMessage message)`:
-        1. ステータスを PROCESSING に更新
-        2. 中間テーブルから対象 receipt_id を取得
-        3. `ReceiptService.findByIds()` でレシートデータ取得
-        4. `CsvGenerator.generate()` を `CompletableFuture.get(300, SECONDS)` でタイムアウト制御
-        5. CSV を MinIO に保存（storageKey: `exports/{exportId}/{fileName}`）
-        6. ステータスを COMPLETED に更新、fileName / storageKey を記録
-        7. 失敗時: ステータスを FAILED に更新、例外を再スロー
-      - `getExportStatus(UUID exportId, String userId)` — ステータス取得
-      - `downloadExport(UUID exportId, String userId)`:
-        - ステータスが COMPLETED でなければ `EXPORT_NOT_READY`
-        - MinIO から CSV を取得して返却
-    - `@Transactional` でトランザクション管理
-  - **完了条件**:
-    - エクスポートジョブ作成 → ワーカー処理 → CSV 生成 → MinIO 保存の一連のフローが動作する
-    - 300秒タイムアウト時に FAILED に遷移し、例外が再スローされる
-    - 空の receiptIds でバリデーションエラーが返る
-    - 未完了のエクスポートのダウンロードが `EXPORT_NOT_READY` で拒否される
-  - **参照**:
-    - `@docs/3.詳細設計/シーケンス図.md` の §4.1（エクスポートシーケンス）
-    - `@docs/2.基本設計/非同期処理フロー設計書.md` の §2.2 エクスポートフロー, §5.2（300秒タイムアウト）
-    - `@docs/3.詳細設計/エラーハンドリング設計書.md` の §8.2 エクスポートワーカー
-  - **依存**: Task 6.1, Task 6.2, Task 6.3, Task 6.4, Task 5.4（ReceiptService）, Task 2.1, Task 2.2
-  - **推定時間**: 1時間45分
-
----
-
-- [ ] **Task 6.6**: ExportJobMessageListener の作成
-
-  - **目的**: SQS からのエクスポートジョブメッセージを受信し、Service に処理を委譲する
-  - **やること**:
-    - `export/infrastructure/messaging/ExportJobMessage.java` — record:
-      - exportId (UUID), userId (String)
-    - `export/infrastructure/messaging/ExportJobMessageListener.java`:
-      - `@SqsListener("receipt-export-queue")` でメッセージ受信
-      - `ExportService.processExport(message)` に委譲
-      - 例外発生時はログ出力後に再スロー
-  - **完了条件**:
-    - SQS にメッセージが投入されるとリスナーが受信する
-    - 処理成功時にメッセージが自動削除される
-  - **参照**:
-    - `@docs/2.基本設計/非同期処理フロー設計書.md` の §4.3（ポーリング方式）
-    - `@docs/3.詳細設計/エラーハンドリング設計書.md` の §6.4
-  - **依存**: Task 6.5
-  - **推定時間**: 20分
 
 ---
 
@@ -1113,9 +1203,9 @@ SQS ワーカーが CSV を生成して MinIO に保存、
 
 ---
 
-- [ ] **Task 7.1**: docker-compose への LocalStack 追加
+- [ ] **Task 7.1**: docker-compose への LocalStack 追加 + Lambda ローカル実行環境
 
-  - **目的**: ローカル開発環境で SQS を利用できるようにする
+  - **目的**: ローカル開発環境で SQS を利用でき、Lambda をローカルで実行できるようにする
   - **やること**:
     - `docker-compose.yml` に LocalStack コンテナを追加:
       - イメージ: `localstack/localstack`
@@ -1126,12 +1216,18 @@ SQS ワーカーが CSV を生成して MinIO に保存、
       - `receipt-export-queue` + DLQ（`receipt-export-queue-dlq`）
       - DLQ の `maxReceiveCount=3` を RedrivePolicy で設定
     - MinIO の `receipt-uploads` バケット自動作成の確認
+    - Lambda のローカル実行環境を整備:
+      - SAM CLI のインストール確認
+      - `lambda/export-csv/` の `sam build` が成功することを確認
+      - `sam local invoke` でテストイベントを使った単体実行ができることを確認
+      - Lambda から docker-compose 内の PostgreSQL / MinIO に接続するための環境変数設定
   - **完了条件**:
     - `docker-compose up` で LocalStack が起動し、4つの SQS キューが自動作成される
     - Spring Boot アプリケーションから LocalStack の SQS に接続できる
+    - `sam local invoke` でエクスポート Lambda がローカルで実行できる
   - **参照**:
     - `@docs/2.基本設計/非同期処理フロー設計書.md` の §3（SQS キュー定義）, §7（ローカル開発環境）
-  - **推定時間**: 45分
+  - **推定時間**: 1時間
 
 ---
 
@@ -1204,29 +1300,33 @@ SQS ワーカーが CSV を生成して MinIO に保存、
 
 ---
 
-- [ ] **Task 7.5**: フロー②の結合テスト
+- [ ] **Task 7.5**: フロー②の結合テスト（Lambda 連携含む）
 
-  - **目的**: レシート一覧 → エクスポートのフロー全体が正しく動作することを確認する
+  - **目的**: レシート一覧 → エクスポートのフロー全体が正しく動作することを確認する。
+    エクスポートは Lambda を `sam local invoke` で実行して検証する
   - **やること**:
     - テストシナリオ:
       1. レシート一覧の取得（フィルタ・ソート・ページング）
       2. レシートの編集 → 更新確認
       3. レシートの削除 → 一覧から消えることを確認
-      4. レシート選択 → エクスポート → ポーリング（2秒間隔）→ CSV ダウンロード
-      5. CSV の内容が正しいことを確認
+      4. レシート選択 → エクスポートジョブ作成 → SQS 投入確認
+      5. Lambda（`sam local invoke`）でエクスポート処理を実行
+      6. ポーリング（2秒間隔）で COMPLETED を検知 → CSV ダウンロード
+      7. CSV の内容が正しいことを確認
     - エラーケースのテスト:
       - 存在しないレシートの操作
       - 未完了エクスポートのダウンロード
+      - Lambda 処理失敗時のステータス（FAILED）遷移
     - 発見した不具合の修正
   - **完了条件**:
     - レシート CRUD が正常動作する
-    - エクスポートから CSV ダウンロードまでのフローが正常動作する
+    - Spring Boot → SQS → Lambda → S3 → ダウンロード の一連のフローが正常動作する
     - CSV の内容が API 設計書のフォーマットに準拠している
   - **参照**:
     - `@docs/3.詳細設計/シーケンス図.md` の §4
     - `@docs/2.基本設計/API設計書.md` の §5.4 CSV フォーマット
-  - **依存**: Task 7.3
-  - **推定時間**: 1時間30分
+  - **依存**: Task 7.3, Task 7.1
+  - **推定時間**: 2時間
 
 ---
 
@@ -1282,14 +1382,15 @@ SQS ワーカーが CSV を生成して MinIO に保存、
 - ocr_jobs と OCR 結果は完全に 1:1 で常に同時参照する
 - JOIN 不要で 1 クエリで全情報を取得でき、MyBatis の ResultMap がシンプル
 
-### 4. ワーカーの API 同居方式
+### 4. OCR ワーカーの API 同居 + エクスポートの Lambda 化
 
-- [x] OCR ワーカー・エクスポートワーカーを Spring Boot API と同一プロセスに同居 → **確定**
+- [x] OCR ワーカーは Spring Boot API と同一プロセスに同居 → **確定**
+- [x] エクスポート処理は AWS Lambda で実行 → **確定**
 
 **理由:**
 
-- 学習プロジェクトとして構成をシンプルに保つ
-- SQS リスナーは Spring Cloud AWS の `@SqsListener` で宣言的に実装
+- OCR ワーカーは Tesseract（ネイティブライブラリ）を使うため Spring Boot 内で同居が合理的
+- エクスポート処理は軽量（DB + CSV + S3）で Lambda に最適。SQS → Lambda のサーバーレスパターンを学習テーマとして追加
 
 ### 5. SQS リトライの委譲方式
 
@@ -1309,7 +1410,7 @@ SQS ワーカーが CSV を生成して MinIO に保存、
 - **Phase 3**: アップロードバッチ機能（2〜3日）
 - **Phase 4**: OCR ジョブ機能（3〜4日）
 - **Phase 5**: レシート機能（2〜3日）
-- **Phase 6**: エクスポート機能（2〜3日）
+- **Phase 6**: エクスポート機能 + Lambda（3〜4日）
 - **Phase 7**: 結合・仕上げ（3〜4日）
 
 **合計推定**: 14〜21日
@@ -1329,4 +1430,4 @@ SQS ワーカーが CSV を生成して MinIO に保存、
 ---
 
 **作成日**: 2026-03-01
-**最終更新**: 2026-03-02
+**最終更新**: 2026-03-01（Lambda 化対応）

@@ -273,7 +273,8 @@ Feature 実装に着手できる土台が完成した状態にする。
     - `src/App.tsx` を更新:
       - Layout コンポーネントを親ルートに設定
       - `/upload` → UploadPage（画面A）
-      - `/batch/:batchId` → OcrJobPage（画面B）
+      - `/batch` → OcrJobPage（画面B: バッチ未選択、サイドバーのみ）
+      - `/batch/:batchId` → OcrJobPage（画面B: 選択バッチの詳細表示）
       - `/receipts` → ReceiptListPage（画面C）
       - `/` → `/upload` にリダイレクト
     - ページコンポーネントの仮実装（プレースホルダー）:
@@ -515,20 +516,67 @@ Feature 実装に着手できる土台が完成した状態にする。
 ### Phase 3: OCR ジョブ処理・確認機能（画面B）
 
 **この Phase のゴール**:
-アップロード後のバッチ内ジョブの処理進捗をポーリングで表示し、
+画面B をバッチ履歴サイドバー付きの2カラムレイアウトで構成し、
+過去のバッチへのアクセスと、選択バッチのジョブ処理進捗のポーリング表示を実現する。
 COMPLETED ジョブの OCR 結果を画像プレビューと共に確認・編集・確定できる状態にする。
 また、FAILED ジョブの手動リトライを実行できるようにする。
 
 **共通参照**:
 
 - `@docs/3.詳細設計/フロントエンドコンポーネント設計書.md` の §5.2 ocrjob
-- `@docs/2.基本設計/API設計書.md` の §5.2 OCR ジョブ
-- `@docs/3.詳細設計/シーケンス図.md` の §2, §3（OCR・確認フロー）
+- `@docs/2.基本設計/API設計書.md` の §5.1 GET /api/upload-batches, §5.2 OCR ジョブ
+- `@docs/3.詳細設計/シーケンス図.md` の §2.0（バッチ一覧取得）, §2, §3（OCR・確認フロー）
 
 **重要な設計決定**:
 
+- 画面B は2カラムレイアウト。左: BatchHistorySidebar（固定幅 280px）、右: 選択バッチの詳細
+- `/batch` と `/batch/:batchId` は同じ OcrJobPage コンポーネントを共有。batchId の有無で右カラムの表示を切り替え
 - ポーリング間隔は2秒、全ジョブが終端ステータス（COMPLETED / CONFIRMED / FAILED）に到達したら停止
 - 署名付き URL の有効期限は15分。PDF の場合は変換済み画像の URL を返す
+
+---
+
+- [ ] **Task 3.0**: バッチ履歴サイドバーの実装
+
+  - **目的**: 画面B の左カラムにバッチ履歴一覧を表示するサイドバーを実装し、
+    過去のバッチに遷移できるようにする
+  - **やること**:
+    - `src/features/ocrjob/types/index.ts` にバッチ一覧用の型を追加:
+      - `BatchListItem` 型（batchId, totalFiles, summary, createdAt）
+      - `BatchListResponse` 型（content: BatchListItem[], page: PageInfo）
+    - `src/features/ocrjob/api/ocrJobService.ts` に追加:
+      - `fetchBatches(params: { page: number; size: number }): Promise<BatchListResponse>`
+    - `src/features/ocrjob/hooks/useBatchHistory.ts`:
+      - `GET /api/upload-batches` を呼び出してバッチ一覧を管理するフック
+      - ページング対応（次ページ読み込み）
+      - `refetch()` 関数を公開し、ジョブ確定時やアップロード完了後に一覧を再取得可能にする
+    - `src/features/ocrjob/components/BatchHistoryItem.tsx`:
+      - バッチ1件の行コンポーネント
+      - 作成日時（formatDateTime）+ ファイル数バッジ + ステータスインジケーター（summary を基にした完了/処理中/失敗の件数表示）
+      - 選択中のバッチはハイライト表示（currentBatchId との比較）
+      - クリックで `navigate(/batch/{batchId})` を実行
+    - `src/features/ocrjob/components/BatchHistorySidebar.tsx`:
+      - サイドバーのコンテナコンポーネント（固定幅 280px）
+      - ヘッダー「バッチ履歴」+ BatchHistoryItem のリスト
+      - ローディング状態、エラー状態（再試行リンク付き）、空状態の表示
+      - スクロール可能（overflow-y: auto）
+    - `src/pages/OcrJobPage.tsx` を更新:
+      - 2カラムレイアウト（左: BatchHistorySidebar、右: 既存コンテンツ）
+      - batchId が URL パラメータにない場合は右カラムに「バッチを選択してください」の空状態メッセージを表示
+    - `src/App.tsx` のルーティング更新:
+      - `/batch` ルートを追加（OcrJobPage、batchId なし）
+      - `/batch/:batchId` は既存のまま維持
+  - **完了条件**:
+    - `/batch` にアクセスするとサイドバーにバッチ一覧が表示され、右カラムに空状態メッセージが表示される
+    - サイドバーのバッチをクリックすると `/batch/{batchId}` に遷移し、右カラムに詳細が表示される
+    - 選択中のバッチがサイドバーでハイライトされる
+    - バッチ一覧の取得に失敗した場合、サイドバーにエラーメッセージと再試行リンクが表示される
+  - **参照**:
+    - `@docs/3.詳細設計/フロントエンドコンポーネント設計書.md` の §5.2（BatchHistorySidebar / BatchHistoryItem）
+    - `@docs/2.基本設計/API設計書.md` の §5.1 GET /api/upload-batches
+    - `@docs/3.詳細設計/シーケンス図.md` の §2.0（バッチ一覧取得シーケンス）
+    - `@docs/3.詳細設計/エラーハンドリング設計書.md` の §7.2（ocrjob エラー処理）
+  - **推定時間**: 2時間
 
 ---
 
