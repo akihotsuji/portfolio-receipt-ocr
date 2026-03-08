@@ -49,8 +49,8 @@ features/
 
 - ドラッグ＆ドロップまたはボタンでファイル選択（JPEG, PNG, PDF）
 - 最大10枚まで同時選択可能
-- ファイルサイズ上限 10MB / 枚
-- バリデーション（形式・サイズ・枚数）をフロントエンドで事前チェック
+- 元ファイル 20MB 以下（画像は自動圧縮、圧縮後 2MB 以下）
+- バリデーション（形式・サイズ・枚数）+ 画像圧縮をフロントエンドで事前処理
 - アップロード実行後、画面B へ遷移
 
 ### 2. 処理状況 + 確認・編集画面（画面B）
@@ -124,7 +124,7 @@ Feature 実装に着手できる土台が完成した状態にする。
 
 - [ ] **Task 1.2**: ユーティリティ関数の作成
 
-  - **目的**: 全画面で使用する表示フォーマット変換とファイルバリデーション関数を共通化する
+  - **目的**: 全画面で使用する表示フォーマット変換、ファイルバリデーション関数、画像圧縮関数を共通化する
   - **やること**:
     - `src/utils/format.ts` に以下を実装:
       - `formatCurrency(amount: number)` → `¥3,980` 形式
@@ -133,16 +133,28 @@ Feature 実装に着手できる土台が完成した状態にする。
       - `formatDateTime(dateTimeStr: string)` → `2026/02/15 12:00` 形式
     - `src/utils/validation.ts` に以下を実装:
       - `isAllowedFileType(file: File)` → JPEG, PNG, PDF のみ許可
-      - `isFileSizeWithinLimit(file: File)` → 10MB 以下
+      - `isFileSizeWithinLimit(file: File)` → 20MB 以下（圧縮前の元ファイルガード）
+      - `isCompressedSizeWithinLimit(size: number)` → 2MB 以下（圧縮後の上限チェック）
       - `isFileCountWithinLimit(count: number)` → 10枚以下
-      - 定数: `MAX_FILE_SIZE = 10 * 1024 * 1024`, `MAX_FILE_COUNT = 10`, `ALLOWED_MIME_TYPES`
+      - 定数: `MAX_FILE_SIZE = 20 * 1024 * 1024`（元ファイル上限）, `MAX_COMPRESSED_FILE_SIZE = 2 * 1024 * 1024`（圧縮後上限）, `MAX_FILE_COUNT = 10`, `ALLOWED_MIME_TYPES`
+    - `src/utils/compression.ts` に以下を実装:
+      - `compressImage(file: File, options?: { maxWidth?: number; quality?: number }): Promise<File>`
+        — Canvas API（OffscreenCanvas + convertToBlob）で画像をリサイズ・JPEG 圧縮
+      - 長辺を maxWidth（デフォルト 1600px）にリサイズ
+      - JPEG 品質（デフォルト 0.8）で再エンコード
+      - PDF の場合は圧縮せずそのまま返す
+      - 定数: `IMAGE_MAX_WIDTH = 1600`, `IMAGE_QUALITY = 0.8`
   - **完了条件**:
     - 各関数がエクスポートされている
+    - `compressImage` が JPEG/PNG を 1MB 以下に圧縮できる
+    - PDF を渡した場合はそのまま返却される
     - 単体テストが存在し、Vitest で全件パスする
   - **参照**:
     - `@docs/3.詳細設計/フロントエンドコンポーネント設計書.md` の §8.4 utils
     - `@docs/1.要件定義/要件定義書.md` の §3.1 ファイルアップロード仕様
-  - **推定時間**: 1時間
+  - **推定時間**: 1時間30分
+  - **備考**: 画像圧縮は API Gateway HTTP API の 10MB ペイロード制限に対応するために導入。
+    フロントエンドで圧縮することで、元の最大枚数（10枚）を維持しつつ合計サイズを 10MB 以内に収める
 
 ---
 
@@ -342,7 +354,7 @@ Feature 実装に着手できる土台が完成した状態にする。
   - **目的**: アップロード Feature で使用する型（ファイル選択状態・API レスポンス）を定義する
   - **やること**:
     - `src/features/upload/types/index.ts` に以下を定義:
-      - `SelectedFile` 型（file, id, validationError?）
+      - `SelectedFile` 型（file, id, validationError?, compressedFile?, compressedSize?）
       - `CreateBatchResponse` 型（batchId, jobs[], totalFiles, createdAt）
       - `BatchJob` 型（jobId, fileName, fileSize, mimeType, status, createdAt）
   - **完了条件**:
@@ -373,29 +385,39 @@ Feature 実装に着手できる土台が完成した状態にする。
 
 - [ ] **Task 2.3**: useFileSelection フックの作成
 
-  - **目的**: ファイルの追加・削除・バリデーションのロジックをフックに集約し、
+  - **目的**: ファイルの追加・削除・バリデーション・画像圧縮のロジックをフックに集約し、
     UI コンポーネントからロジックを分離する
   - **やること**:
     - `src/features/upload/hooks/useFileSelection.ts` に以下を実装:
-      - `addFiles(files: FileList | File[])` — ファイル追加 + バリデーション
+      - `addFiles(files: FileList | File[])` — ファイル追加 + バリデーション + 圧縮
       - `removeFile(fileId: string)` — ファイル削除
       - `clearFiles()` — 全ファイルクリア
-      - 戻り値: `{ files, addFiles, removeFile, clearFiles, hasErrors, canUpload }`
-      - バリデーション:
-        - ファイル形式チェック（JPEG, PNG, PDF のみ）
-        - ファイルサイズチェック（10MB 以下）
-        - ファイル枚数チェック（10枚以下）
+      - 戻り値: `{ files, addFiles, removeFile, clearFiles, hasErrors, canUpload, isCompressing }`
+      - `addFiles` の処理フロー:
+        1. ファイル形式チェック（JPEG, PNG, PDF のみ）
+        2. 元ファイルサイズチェック（20MB 以下）— 超えたら即エラー
+        3. 画像（JPEG/PNG）の場合: `compressImage()` で圧縮
+        4. 圧縮後サイズチェック（2MB 以下）— 超えたらエラー
+        5. ファイル枚数チェック（10枚以下）
+      - PDF は圧縮をスキップし、元ファイルをそのまま使用
       - バリデーションエラーは各ファイルの `validationError` に格納
+      - 圧縮中は `isCompressing: true` を返す
+    - `SelectedFile` 型に `compressedFile?: File` と `compressedSize?: number` を追加し、
+      API 送信時は `compressedFile ?? file`（圧縮済みがあればそれを使用）を送る
     - `src/features/upload/hooks/index.ts` にバレルエクスポート
   - **完了条件**:
     - 不正なファイルを追加するとバリデーションエラーが設定される
+    - 画像ファイルが圧縮され、圧縮後サイズが `compressedSize` に格納される
+    - PDF は圧縮されずそのまま保持される
     - 正しいファイルのみの場合 `canUpload` が true になる
+    - 圧縮中に `isCompressing` が true になる
     - 単体テストが存在し、Vitest でパスする
   - **参照**:
     - `@docs/3.詳細設計/フロントエンドコンポーネント設計書.md` の §5.1 カスタムフック
     - `src/utils/validation.ts`（Task 1.2 で作成）
-  - **依存**: Task 1.2（validation ユーティリティ）
-  - **推定時間**: 1時間
+    - `src/utils/compression.ts`（Task 1.2 で作成）
+  - **依存**: Task 1.2（validation + compression ユーティリティ）
+  - **推定時間**: 1時間30分
 
 ---
 
@@ -453,11 +475,13 @@ Feature 実装に着手できる土台が完成した状態にする。
   - **やること**:
     - `src/features/upload/components/FileRow.tsx`:
       - ファイル名、サイズ（formatFileSize）、形式アイコン、削除ボタン
+      - 画像ファイルの場合は圧縮後サイズも表示（例: `5.2 MB → 0.4 MB`）
+      - PDF の場合は元サイズのみ表示
       - バリデーションエラー時のエラーメッセージ表示（赤字）
     - `src/features/upload/components/FileList.tsx`:
       - FileRow の一覧表示
       - ファイル未選択時はファイル制約の案内表示
-        （対応形式: JPEG, PNG, PDF / 最大サイズ: 10MB / 最大枚数: 10枚）
+        （対応形式: JPEG, PNG, PDF / 画像は自動圧縮されます / 最大枚数: 10枚）
     - `src/features/upload/components/index.ts` にバレルエクスポート
   - **完了条件**:
     - 選択済みファイルが一覧表示される

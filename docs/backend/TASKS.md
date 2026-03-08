@@ -60,7 +60,7 @@ uploadbatch ──→ ocrjob ──→ receipt ←── export
 
 ### 1. アップロードバッチ（Phase 3）
 
-- multipart/form-data でファイル受付（1〜10枚、JPEG/PNG/PDF、10MB以下）
+- multipart/form-data でファイル受付（1〜10枚、JPEG/PNG/PDF、2MB以下/枚）
 - MinIO にファイル保存 → DB にバッチ・ジョブレコード作成 → SQS にメッセージ投入
 - バッチステータスのポーリング用エンドポイント提供
 
@@ -338,7 +338,8 @@ SQS へのメッセージ送信が動作する状態にする。
       - `/api/exports/**` → 認証必須
       - CORS 設定（フロントエンドからのアクセス許可）
       - multipart/form-data の受付許可
-      - ファイルアップロードサイズ上限の設定（`spring.servlet.multipart.max-file-size: 10MB`, `max-request-size: 100MB`）
+      - ファイルアップロードサイズ上限の設定（`spring.servlet.multipart.max-file-size: 2MB`, `max-request-size: 10MB`）
+      - **備考**: API Gateway HTTP API の 10MB ペイロード制限に対応。フロントエンドで画像圧縮後に送信するため、1ファイル 2MB で十分
   - **完了条件**:
     - JWT なしのリクエストが 401 で拒否される
     - 有効な JWT 付きのリクエストが認可される
@@ -460,7 +461,7 @@ MinIO に保存 → DB にバッチ・ジョブレコード作成 → SQS にメ
   - **やること**:
     - `uploadbatch/application/UploadBatchService.java`:
       - `createBatch(List<MultipartFile> files, String userId)`:
-        1. ファイルバリデーション（枚数: 1〜10、サイズ: 10MB以下、形式: JPEG/PNG/PDF）
+        1. ファイルバリデーション（枚数: 1〜10、サイズ: 2MB以下、形式: JPEG/PNG/PDF）
         2. 各ファイルを MinIO に保存（storageKey: `{batchId}/{fileName}`）
         3. `upload_batches` レコードを INSERT
         4. ファイルごとに `OcrJobService.createJob()` を呼び出し

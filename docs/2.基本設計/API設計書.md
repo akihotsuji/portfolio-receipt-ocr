@@ -52,7 +52,7 @@ Authorization: Bearer <JWT トークン>
     "details": [
       {
         "field": "files",
-        "message": "最大ファイルサイズは 10MB です"
+        "message": "最大ファイルサイズは 2MB です"
       }
     ]
   }
@@ -73,7 +73,7 @@ Authorization: Bearer <JWT トークン>
 | UNAUTHORIZED | 401 | 認証エラー（トークン無効・期限切れ） |
 | FORBIDDEN | 403 | 権限エラー（他ユーザーのリソースへのアクセス） |
 | NOT_FOUND | 404 | リソースが存在しない |
-| FILE_TOO_LARGE | 400 | ファイルサイズが上限（10MB）を超過 |
+| FILE_TOO_LARGE | 400 | ファイルサイズが上限（2MB）を超過 |
 | FILE_TYPE_NOT_ALLOWED | 400 | 許可されていないファイル形式 |
 | TOO_MANY_FILES | 400 | アップロード枚数が上限（10枚）を超過 |
 | JOB_NOT_RETRYABLE | 409 | リトライ不可能な状態のジョブ |
@@ -180,8 +180,10 @@ QUEUED → PROCESSING → COMPLETED
 | ルール | エラーコード |
 |---|---|
 | ファイル数: 1〜10 枚 | TOO_MANY_FILES |
-| ファイルサイズ: 10MB 以下 / 枚 | FILE_TOO_LARGE |
+| ファイルサイズ: 2MB 以下 / 枚（フロントエンドで圧縮後） | FILE_TOO_LARGE |
 | ファイル形式: JPEG, PNG, PDF | FILE_TYPE_NOT_ALLOWED |
+
+> **注意**: API Gateway HTTP API の 10MB ペイロード制限により、リクエスト全体（全ファイル + multipart ヘッダー）が 10MB 以内に収まる必要がある。フロントエンドで画像を自動圧縮（長辺 1600px, JPEG 品質 0.8）することで、10枚アップロードでも合計 10MB 以内に収まる設計としている。
 
 **レスポンス: 201 Created**
 
